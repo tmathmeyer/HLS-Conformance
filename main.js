@@ -2,39 +2,34 @@ import { mimeTypes, codecStrings } from './conformance.js';
 
 function renderMseGrid() {
   const grid = document.getElementById('mse-grid');
-  grid.setAttribute('x-axis', JSON.stringify(codecStrings));
-  grid.setAttribute('y-axis', JSON.stringify(mimeTypes));
-  grid.render(); // Re-render with new attributes
-
-  mimeTypes.forEach((mimeType, y) => {
-    codecStrings.forEach((codec, x) => {
+  const data = mimeTypes.map(mimeType => {
+    return codecStrings.map(codec => {
       const fullType = `${mimeType}; codecs="${codec}"`;
-      const supported = MediaSource.isTypeSupported(fullType);
-      grid.setCell(x, y, supported ? 'pass' : 'fail');
+      return MediaSource.isTypeSupported(fullType) ? 'pass' : 'fail';
     });
   });
+
+  grid.setAttribute('x-axis', JSON.stringify(codecStrings));
+  grid.setAttribute('y-axis', JSON.stringify(mimeTypes));
+  grid.setAttribute('data', JSON.stringify(data));
 }
 
 function renderVideoGrid() {
   const grid = document.getElementById('video-grid');
-  grid.setAttribute('x-axis', JSON.stringify(codecStrings));
-  grid.setAttribute('y-axis', JSON.stringify(mimeTypes));
-  grid.render(); // Re-render with new attributes
-
   const video = document.createElement('video');
-  mimeTypes.forEach((mimeType, y) => {
-    codecStrings.forEach((codec, x) => {
+  const data = mimeTypes.map(mimeType => {
+    return codecStrings.map(codec => {
       const fullType = `${mimeType}; codecs="${codec}"`;
       const supportLevel = video.canPlayType(fullType);
-      let supportClass = 'fail';
-      if (supportLevel === 'probably') {
-        supportClass = 'pass';
-      } else if (supportLevel === 'maybe') {
-        supportClass = 'maybe';
-      }
-      grid.setCell(x, y, supportClass);
+      if (supportLevel === 'probably') return 'pass';
+      if (supportLevel === 'maybe') return 'maybe';
+      return 'fail';
     });
   });
+
+  grid.setAttribute('x-axis', JSON.stringify(codecStrings));
+  grid.setAttribute('y-axis', JSON.stringify(mimeTypes));
+  grid.setAttribute('data', JSON.stringify(data));
 }
 
 

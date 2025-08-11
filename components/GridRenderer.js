@@ -1,13 +1,35 @@
 class GridRenderer extends HTMLElement {
+  static get observedAttributes() {
+    return ['title', 'x-axis', 'y-axis', 'data'];
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
+    this._updateAndRender();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      this._updateAndRender();
+    }
+  }
+
+  _updateAndRender() {
     this.title = this.getAttribute('title') || 'Grid';
-    this.xAxis = JSON.parse(this.getAttribute('x-axis') || '[]');
-    this.yAxis = JSON.parse(this.getAttribute('y-axis') || '[]');
+    try {
+      this.xAxis = JSON.parse(this.getAttribute('x-axis') || '[]');
+      this.yAxis = JSON.parse(this.getAttribute('y-axis') || '[]');
+      this.data = JSON.parse(this.getAttribute('data') || '[]');
+    } catch (e) {
+      console.error("Invalid JSON for an attribute.", e);
+      this.xAxis = [];
+      this.yAxis = [];
+      this.data = [];
+    }
     this.render();
   }
 
@@ -81,9 +103,10 @@ class GridRenderer extends HTMLElement {
       <div class="grid-container">
         <div class="grid">
           ${this.yAxis.map((_, y) =>
-            this.xAxis.map((_, x) =>
-              `<div class="cell" data-x="${x}" data-y="${y}"></div>`
-            ).join('')
+            this.xAxis.map((_, x) => {
+              const cellClass = (this.data[y] && this.data[y][x]) ? this.data[y][x] : '';
+              return `<div class="cell ${cellClass}" data-x="${x}" data-y="${y}"></div>`
+            }).join('')
           ).join('')}
         </div>
         <div class="x-axis">
@@ -102,13 +125,6 @@ class GridRenderer extends HTMLElement {
         </div>
       </div>
     `;
-  }
-
-  setCell(x, y, className) {
-    const cell = this.shadowRoot.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
-    if (cell) {
-      cell.classList.add(className);
-    }
   }
 }
 

@@ -38,7 +38,8 @@
 8. **Render the codec support checks**
     * Using the grid renderer, load `mimeTypes` from `conformance.js` as the Y axis and `codecStrings` as the X axis. In the first grid, we will populate each cell with a color based on the results of `MediaSource.IsTypeSupported()`. If the result of that function is `true`, color the cell green. If the result is `false`, color the cell red. For the second grid, we will use `<video>.canPlayType()`. If the result is `probably`, color the cell green. If the result is `maybe`, color the cell yellow. For any other returned value, color the cell red. 
 
-9.  **TBD**
+9.  **Pause for bug fixing**
+    * The user will go over some bug that you'll need to address.
 
 10. **TBD**
 
