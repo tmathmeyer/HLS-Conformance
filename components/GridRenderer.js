@@ -103,6 +103,13 @@ class GridRenderer extends HTMLElement {
       </div>
     `;
   }
+
+  setCell(x, y, className) {
+    const cell = this.shadowRoot.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+    if (cell) {
+      cell.classList.add(className);
+    }
+  }
 }
 
 customElements.define('grid-renderer', GridRenderer);

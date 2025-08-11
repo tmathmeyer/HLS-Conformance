@@ -28,29 +28,19 @@
     *   Style the `<header>` and `<footer>` with distinct background colors and padding.
     *   Ensure the `<main>` element grows to fill the available space.
 
-6.  **Manifest Input Controls**
-    *   In `index.html`, inside the `<main>` element, add a `<form>` to contain the inputs.
-    *   Add an `<input type="text">` with a `placeholder` for the HLS manifest URL.
-    *   Add a `<button type="submit">` with the text "Load".
+6. **Create some conformance lists**
+    * In a new file `conformance.js`, lets make a couple of lists. The first list is one for mime types, and the second is for codec strings. These lists will be crossed and passed to MediaSource.isTypeSupported() as well as <video>.CanPlayType(), and presented in a grid view. 
+    * In `conformance.js` again, lets make a list of HLS features, based on the specification here: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis. This list should include things like encrypted content, live, vod, etc. each list entry should be an object including a display name, a manifest url, and a description. To this list we also want to add some tests for "quirky" behavior, which are things that are commonly found in real-life manifests, but violate the spec. A list of some quirks can be found here: /chromium/src/media/formats/hls/quirks.h
 
-7.  **Player Selection Controls**
-    *   Below the manifest input, add a `<fieldset>` for the player choices.
-    *   Include three `<input type="radio">` elements with corresponding `<label>`s for "Native", "HLS.js", and "Shaka Player".
-    *   Ensure they share the same `name` attribute to function as a group, and set "Native" as the default `checked` option.
+7. **Create a grid renderer web component**
+    * This should support an X and Y axis list as well as a title. It should create the x-axis labels using vertical text and the y-axis labels using normal text (though both should use a fixed-width font).
 
-8.  **Video Element and UI Styling**
-    *   Add the central `<video>` element to `index.html`, giving it a unique ID, `controls`, and `autoplay` attributes.
-    *   In `style.css`, apply modern styling to the form, input field, button, and fieldset to create a clean, professional UI.
+8. **Render the codec support checks**
+    * Using the grid renderer, load `mimeTypes` from `conformance.js` as the Y axis and `codecStrings` as the X axis. In the first grid, we will populate each cell with a color based on the results of `MediaSource.IsTypeSupported()`. If the result of that function is `true`, color the cell green. If the result is `false`, color the cell red. For the second grid, we will use `<video>.canPlayType()`. If the result is `probably`, color the cell green. If the result is `maybe`, color the cell yellow. For any other returned value, color the cell red. 
 
-9.  **DOM Element Access**
-    *   In `main.js`, write the initial code to get and store references to all key DOM elements.
-    *   Create constants for the form, manifest input, player selection radios, and the video element.
+9.  **TBD**
 
-10. **Core Load Logic**
-    *   In `main.js`, add a `submit` event listener to the form.
-    *   Inside the listener, prevent the default form submission.
-    *   Read the values from the manifest URL input and the selected player radio button.
-    *   For now, `console.log` the retrieved values to confirm they are being read correctly.
+10. **TBD**
 
 11. **Native Player Implementation**
     *   In the form's submit listener, add the logic for the "Native" player.
