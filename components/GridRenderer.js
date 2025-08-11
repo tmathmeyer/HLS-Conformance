@@ -34,9 +34,8 @@ class GridRenderer extends HTMLElement {
   }
 
   render() {
-    const cellWidth = 100;
+    const cellWidth = 40;
     const cellHeight = 40;
-    const headerHeight = 200;
     const yAxisWidth = 200;
 
     this.shadowRoot.innerHTML = `
@@ -44,11 +43,6 @@ class GridRenderer extends HTMLElement {
         :host {
           display: block;
           margin-bottom: 2rem;
-        }
-        .grid-container {
-          position: relative;
-          padding-top: ${headerHeight}px;
-          padding-left: ${yAxisWidth}px;
         }
         .title {
           text-align: center;
@@ -58,71 +52,47 @@ class GridRenderer extends HTMLElement {
         }
         .grid {
           display: grid;
-          grid-template-columns: repeat(${this.xAxis.length}, ${cellWidth}px);
-          grid-template-rows: repeat(${this.yAxis.length}, ${cellHeight}px);
+          grid-template-columns: ${yAxisWidth}px repeat(${this.xAxis.length}, ${cellWidth}px);
+          grid-template-rows: auto repeat(${this.yAxis.length}, ${cellHeight}px);
           border-left: 1px solid #ccc;
           border-top: 1px solid #ccc;
         }
-        .cell {
+        .grid-cell {
           border-right: 1px solid #ccc;
           border-bottom: 1px solid #ccc;
-        }
-        .x-axis-label {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: ${cellWidth}px;
-          height: ${headerHeight}px;
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          font-family: monospace;
-          writing-mode: vertical-rl;
-          transform: rotate(180deg);
-          text-align: left;
-          padding-bottom: 5px;
-          border-left: 1px solid #ccc;
-          border-right: 1px solid #ccc;
-        }
-        .y-axis-label {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: ${yAxisWidth}px;
-          height: ${cellHeight}px;
           display: flex;
           align-items: center;
-          justify-content: flex-end;
+          justify-content: center;
           font-family: monospace;
+        }
+        .x-axis-label {
+          writing-mode: vertical-rl;
+          transform: rotate(180deg);
+          padding: 5px;
+        }
+        .y-axis-label {
+          justify-content: flex-end;
           padding-right: 10px;
-          border-top: 1px solid #ccc;
+        }
+        .corner {
+          border-right: 1px solid #ccc;
           border-bottom: 1px solid #ccc;
         }
       </style>
       <div class="title">${this.title}</div>
-      <div class="grid-container">
-        <div class="grid">
-          ${this.yAxis.map((_, y) =>
-            this.xAxis.map((_, x) => {
-              const cellClass = (this.data[y] && this.data[y][x]) ? this.data[y][x] : '';
-              return `<div class="cell ${cellClass}" data-x="${x}" data-y="${y}"></div>`
-            }).join('')
-          ).join('')}
-        </div>
-        <div class="x-axis">
-          ${this.xAxis.map((label, i) => `
-            <div class="x-axis-label" style="left: ${yAxisWidth + i * cellWidth}px;">
-              ${label}
-            </div>
-          `).join('')}
-        </div>
-        <div class="y-axis">
-          ${this.yAxis.map((label, i) => `
-            <div class="y-axis-label" style="top: ${headerHeight + i * cellHeight}px;">
-              ${label}
-            </div>
-          `).join('')}
-        </div>
+      <div class="grid">
+        <!-- Corner -->
+        <div class="corner"></div>
+        <!-- X-Axis Labels -->
+        ${this.xAxis.map(label => `<div class="grid-cell x-axis-label">${label}</div>`).join('')}
+        <!-- Y-Axis Labels and Data Cells -->
+        ${this.yAxis.map((label, y) => `
+          <div class="grid-cell y-axis-label">${label}</div>
+          ${this.xAxis.map((_, x) => {
+            const cellClass = (this.data[y] && this.data[y][x]) ? this.data[y][x] : '';
+            return `<div class="grid-cell ${cellClass}"></div>`;
+          }).join('')}
+        `).join('')}
       </div>
     `;
   }
