@@ -37,6 +37,7 @@ class GridRenderer extends HTMLElement {
     const cellWidth = 40;
     const cellHeight = 40;
     const yAxisWidth = 200;
+    const xAxisWidth = 250;
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -53,39 +54,50 @@ class GridRenderer extends HTMLElement {
         .grid {
           display: grid;
           grid-template-columns: ${yAxisWidth}px repeat(${this.xAxis.length}, ${cellWidth}px);
-          grid-template-rows: auto repeat(${this.yAxis.length}, ${cellHeight}px);
-          border-left: 1px solid #ccc;
-          border-top: 1px solid #ccc;
+          grid-template-rows: ${xAxisWidth}px repeat(${this.yAxis.length}, ${cellHeight}px);
+          box-sizing: border-box;
         }
         .grid-cell {
-          border-right: 1px solid #ccc;
-          border-bottom: 1px solid #ccc;
           display: flex;
           align-items: center;
           justify-content: center;
           font-family: monospace;
+          border-bottom: 1px solid #ccc;
+          border-right: 1px solid #ccc;
+          box-sizing: border-box;
         }
         .x-axis-label {
           writing-mode: vertical-rl;
-          transform: rotate(180deg);
           padding: 5px;
+          border-top: 1px solid #ccc;
+        }
+        .x-axis-label > .label-rotate {
+          transform: rotate(180deg);
         }
         .y-axis-label {
           justify-content: flex-end;
           padding-right: 10px;
+          border-left: 1px solid #ccc;
         }
         .corner {
+          border-left: 1px solid #ccc;
           border-right: 1px solid #ccc;
+          border-top: 1px solid #ccc;
           border-bottom: 1px solid #ccc;
+          box-sizing: border-box;
+          line-height: ${xAxisWidth}px;
+          text-align: center;
+        }
+        .corner > .label-rotate {
+          transform: rotate(-45deg);
+          margin-left: -100%;
+          margin-right: -100%;
+          text-align: center;
         }
       </style>
-      <div class="title">${this.title}</div>
       <div class="grid">
-        <!-- Corner -->
-        <div class="corner"></div>
-        <!-- X-Axis Labels -->
-        ${this.xAxis.map(label => `<div class="grid-cell x-axis-label">${label}</div>`).join('')}
-        <!-- Y-Axis Labels and Data Cells -->
+        <div class="grid corner"><div class="label-rotate">${this.title}</div></div>
+        ${this.xAxis.map(label => `<div class="grid-cell x-axis-label"><div class="label-rotate">${label}</div></div>`).join('')}
         ${this.yAxis.map((label, y) => `
           <div class="grid-cell y-axis-label">${label}</div>
           ${this.xAxis.map((_, x) => {

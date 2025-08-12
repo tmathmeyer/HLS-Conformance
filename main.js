@@ -9,8 +9,8 @@ function renderMseGrid() {
     });
   });
 
-  grid.setAttribute('x-axis', JSON.stringify(codecStrings));
-  grid.setAttribute('y-axis', JSON.stringify(mimeTypes));
+  grid.setAttribute('x-axis', JSON.stringify(mimeTypes));
+  grid.setAttribute('y-axis', JSON.stringify(codecStrings));
   grid.setAttribute('data', JSON.stringify(data));
 }
 
@@ -27,8 +27,8 @@ function renderVideoGrid() {
     });
   });
 
-  grid.setAttribute('x-axis', JSON.stringify(codecStrings));
-  grid.setAttribute('y-axis', JSON.stringify(mimeTypes));
+  grid.setAttribute('x-axis', JSON.stringify(mimeTypes));
+  grid.setAttribute('y-axis', JSON.stringify(codecStrings));
   grid.setAttribute('data', JSON.stringify(data));
 }
 
