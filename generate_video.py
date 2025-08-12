@@ -1,8 +1,11 @@
 import numpy as np
+
+import numpy as np
 from moviepy.editor import VideoClip, AudioFileClip, VideoFileClip, CompositeAudioClip
 from moviepy.audio.AudioClip import AudioArrayClip
 
-def generate_media(video_path, audio_path, final_path, duration=10, fps=25):
+
+def generate_media(final_path, duration=10, fps=25):
     """
     Generates and combines the video and audio for the test asset.
     """
@@ -18,12 +21,10 @@ def generate_media(video_path, audio_path, final_path, duration=10, fps=25):
         angle = 2 * np.pi * t / duration
         x = int((width - box_size) / 2 + (orbit_width / 2) * np.cos(angle))
         y = int((height - box_size) / 2 + (orbit_height / 2) * np.sin(angle))
-        frame[y:y+box_size, x:x+box_size] = [255, 0, 0]
+        frame[y:y+box_size, x:x+box_size] = [255, 0, 0] # Red
         return frame
 
     video = VideoClip(make_frame, duration=duration)
-    # CRITICAL: Set keyframe interval ('g') to 2 seconds (50 frames at 25fps)
-    video.write_videofile(video_path, fps=fps, codec='libx264', ffmpeg_params=['-g', str(fps*2)])
 
     # --- Audio Generation ---
     def make_beep(freq, beep_duration):
@@ -38,18 +39,18 @@ def generate_media(video_path, audio_path, final_path, duration=10, fps=25):
     beep4 = make_beep(880, 0.2).set_start(7.5)
 
     audio = CompositeAudioClip([beep1, beep2, beep3, beep4]).set_duration(duration)
-    audio.write_audiofile(audio_path, fps=sample_rate, codec='aac')
-
+    
     # --- Composition ---
-    final_video = VideoFileClip(video_path)
-    final_audio = AudioFileClip(audio_path)
-    final_clip = final_video.set_audio(final_audio)
-    final_clip.write_videofile(final_path, codec='libx264', audio_codec='aac')
-
+    final_clip = video.set_audio(audio)
+    
+    # CRITICAL: Set keyframe interval ('g') to 2 seconds (50 frames at 25fps)
+    final_clip.write_videofile(
+        final_path, 
+        fps=fps, 
+        codec='libx264', 
+        audio_codec='aac', 
+        ffmpeg_params=['-g', str(fps*2)]
+    )
 
 if __name__ == '__main__':
-    generate_media(
-        'content/video_only.mp4',
-        'content/audio_only.aac',
-        'content/orbit.mp4'
-    )    
+    generate_media('content/orbit.mp4')
