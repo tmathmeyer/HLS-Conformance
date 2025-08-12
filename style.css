@@ -41,15 +41,3 @@ main {
   flex-grow: 1;
   padding: 2rem;
 }
-
-.pass {
-  background-color: #28a745; /* green */
-}
-
-.fail {
-  background-color: #dc3545; /* red */
-}
-
-.maybe {
-  background-color: #ffc107; /* yellow */
-}

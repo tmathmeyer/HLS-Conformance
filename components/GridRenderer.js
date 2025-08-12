@@ -94,6 +94,9 @@ class GridRenderer extends HTMLElement {
           margin-right: -100%;
           text-align: center;
         }
+        .pass { background-color: #28a745; }
+        .fail { background-color: #dc3545; }
+        .maybe { background-color: #ffc107; }
       </style>
       <div class="grid">
         <div class="grid corner"><div class="label-rotate">${this.title}</div></div>
