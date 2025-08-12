@@ -32,12 +32,48 @@ body {
 header,
 footer {
   background-color: var(--header-bg);
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
 main {
   flex-grow: 1;
-  padding: 2rem;
+  padding: 1rem;
+}
+
+.report-box {
+  background-color: var(--header-bg);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+}
+
+.report-box[open] summary {
+  border-bottom: 1px solid #ddd;
+}
+
+summary {
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  list-style: none; /* Remove default arrow */
+}
+
+summary::-webkit-details-marker {
+  display: none; /* Remove default arrow for Chrome/Safari */
+}
+
+summary::before {
+  content: '▶';
+  margin-right: 0.4rem;
+  font-size: 0.8rem;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.report-box[open] summary::before {
+  transform: rotate(90deg);
 }

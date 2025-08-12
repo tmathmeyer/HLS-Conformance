@@ -34,28 +34,23 @@ class GridRenderer extends HTMLElement {
   }
 
   render() {
-    const cellWidth = 40;
-    const cellHeight = 40;
-    const yAxisWidth = 200;
-    const xAxisWidth = 250;
+    const cellWidth = 30;
+    const cellHeight = 30;
+    const yAxisWidth = 240;
+    const xAxisWidth = 200;
 
     this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: block;
-          margin-bottom: 2rem;
-        }
-        .title {
-          text-align: center;
-          font-size: 1.5rem;
-          font-weight: bold;
-          margin-bottom: 1rem;
+          padding: 0.5rem;
         }
         .grid {
           display: grid;
           grid-template-columns: ${yAxisWidth}px repeat(${this.xAxis.length}, ${cellWidth}px);
           grid-template-rows: ${xAxisWidth}px repeat(${this.yAxis.length}, ${cellHeight}px);
           box-sizing: border-box;
+          font-size: 0.8rem;
         }
         .grid-cell {
           display: flex;
@@ -90,9 +85,7 @@ class GridRenderer extends HTMLElement {
         }
         .corner > .label-rotate {
           transform: rotate(-45deg);
-          margin-left: -100%;
-          margin-right: -100%;
-          text-align: center;
+          max-width: 100%;
         }
         .pass { background-color: #28a745; }
         .fail { background-color: #dc3545; }
