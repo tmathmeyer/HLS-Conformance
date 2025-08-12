@@ -1,0 +1,8 @@
+# Python virtual environment
+venv/
+content/video_only.mp4
+content/audio_only.aac
+content/beep1.wav
+content/beep2.wav
+content/beep3.wav
+content/beep4.wav
