@@ -77,3 +77,51 @@ summary::before {
 .report-box[open] summary::before {
   transform: rotate(90deg);
 }
+
+.hls-report-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.result {
+  font-weight: bold;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.result.pass { background-color: #28a745; }
+.result.fail { background-color: #dc3545; }
+.result.running {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.report-body {
+  padding: 0.5rem 1rem 1rem 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.report-body h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.report-body pre {
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  max-height: 150px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.report-body canvas {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+}

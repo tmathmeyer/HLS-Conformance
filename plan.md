@@ -41,16 +41,26 @@
 9.  **Pause for bug fixing**
     * The user will go over some bug that you'll need to address.
 
-10. **TBD**
+10. **Improve The Look**
+    * There's a nice contrast on the page with the title bar "hovering" above the grey background.
+    * Each of the conformance reports should have a similar feel, being contained in a box which similarly hovers over the background.
+    * The conformance reports should be collapsable, and start in the collapsed state.
+    * Each of the grids provided so far are separate conformance reports.
 
-11. **Native Player Implementation**
-    *   In the form's submit listener, add the logic for the "Native" player.
-    *   If the selected player is "Native", set the `<video>` element's `src` attribute directly to the manifest URL provided by the user.
+11. **Manifests Conformance**
+    * Use the entries in `hlsConformanceTests` from `conformance.js`.
+    * For each conformance run, do the following:
+      - Make a video player in the background
+      - Capture all JS logs happening related to this player
+      - Set the video source to the manifest URL provided
+      - Let the manifest load, and capture any errors that show up
+      - Draw the video to canvas.
+      - Generate a conformance report (a <details> and <summary> combination), which includes the captured logs, loaded files, and a screenshot of the video from the canvas.
 
-12. **HLS.js Library Integration**
-    *   Create a `vendor/` directory.
-    *   Download the latest `hls.min.js` from its official CDN or repository and save it in `vendor/`.
-    *   Add a `<script>` tag for `hls.min.js` to `index.html` before the `main.js` script tag.
+12. **Generating Content**
+    * Create a `content/` directory.
+    * Use ffmpeg to create a media file in the `content/` directory which is just a red square orbiting the center in a clockwise direction. The video should be 360p, and play a differently pitched beep each time the square moves another 25% around it's orbit. This file should be such that playing it repeatedly on loop is smooth from the last frame to the first. It should take 10 seconds for the square to revolve around it's orbit.
+    * Use ffmpeg to split this content into HLS content both in the MP4 format as well as the TS format. Segment lengths should be 2 seconds each.
 
 13. **HLS.js Player Implementation**
     *   In `main.js`, write a dedicated function `loadWithHlsJs(url)`.
