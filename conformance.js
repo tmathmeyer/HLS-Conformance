@@ -56,4 +56,24 @@ export const hlsConformanceTests = [
     manifest: '/manifests/basic-vod-fmp4.m3u8',
     description: 'A standard Video-On-Demand presentation using fragmented MP4 segments.'
   },
+  {
+    name: 'Quirk: ENDLIST in Multivariant Playlist',
+    manifest: '/manifests/quirk-endlist-in-multivariant.m3u8',
+    description: 'A multivariant playlist with a trailing EXT-X-ENDLIST tag, which is a spec violation.'
+  },
+  {
+    name: 'Quirk: Duplicate Rendition Names',
+    manifest: '/manifests/quirk-duplicate-rendition-names.m3u8',
+    description: 'A manifest with multiple audio renditions in the same group using the same NAME attribute.'
+  },
+  {
+    name: 'Quirk: Multiple Default Renditions',
+    manifest: '/manifests/quirk-multiple-default-renditions.m3u8',
+    description: 'A manifest with multiple audio renditions in the same group marked as DEFAULT=YES.'
+  },
+  {
+    name: 'Quirk: Missing EXTINF Comma',
+    manifest: '/manifests/quirk-missing-extinf-comma.m3u8',
+    description: 'A media playlist where an EXTINF tag is missing its trailing comma.'
+  },
 ];
