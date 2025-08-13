@@ -1,0 +1,16 @@
+#EXTM3U
+#EXT-X-VERSION:7
+#EXT-X-TARGETDURATION:2
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-MAP:URI="../content/fmp4-avc-aac/init.mp4"
+#EXTINF:2.000000,
+../content/fmp4-avc-aac/segment000.m4s
+#EXTINF:2.000000,
+../content/fmp4-avc-aac/segment001.m4s
+#EXTINF:2.000000,
+../content/fmp4-avc-aac/segment002.m4s
+#EXTINF:2.000000,
+../content/fmp4-avc-aac/segment003.m4s
+#EXTINF:2.000000,
+../content/fmp4-avc-aac/segment004.m4s
+#EXT-X-ENDLIST

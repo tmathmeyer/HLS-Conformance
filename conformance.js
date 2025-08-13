@@ -48,12 +48,12 @@ export const codecStrings = [
 export const hlsConformanceTests = [
   {
     name: 'Basic VOD (TS)',
-    manifest: '/content/ts/manifest.m3u8',
+    manifest: '/manifests/basic-vod-ts.m3u8',
     description: 'A standard Video-On-Demand presentation using MPEG-2 Transport Stream segments.'
   },
   {
     name: 'Basic VOD (fMP4)',
-    manifest: '/content/fmp4/manifest.m3u8',
+    manifest: '/manifests/basic-vod-fmp4.m3u8',
     description: 'A standard Video-On-Demand presentation using fragmented MP4 segments.'
   },
 ];
