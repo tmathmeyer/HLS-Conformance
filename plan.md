@@ -74,3 +74,10 @@
 15. **Quirky playback**
     * In the file "/chromium/src/media/formats/hls/quirks.h" I have listed a few issues that we see in real-life manifests that are actually spec violations. Lets add a conformance test for each of these.
     * Generate new manifests that exhibit these quirks in the manifests/ directory, and add new entried to conformance.js's hlsConformanceTests array.
+
+16. **More variety**
+    * Come up with more test cases for conformance. Anything you can think of. Make new entries in the conformance.js file, but don't create any manifests yet.
+      - some ideas include encryption, different codecs, (aac, h265, h266)
+    * Some of these things should be cases that _SHOULD_ fail, not just pass. You can tag these entries with some kind of expect failure label.
+    * After you complete this step, I'll review your entries.
+    * Aim for 20-40 new entries.

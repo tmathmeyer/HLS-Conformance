@@ -76,4 +76,111 @@ export const hlsConformanceTests = [
     manifest: '/manifests/quirk-missing-extinf-comma.m3u8',
     description: 'A media playlist where an EXTINF tag is missing its trailing comma.'
   },
+  // New Test Cases
+  {
+    name: 'HEVC/H.265 VOD',
+    manifest: '/manifests/vod-hevc.m3u8',
+    description: 'A VOD presentation using HEVC (H.265) codec.'
+  },
+  {
+    name: 'VP9 VOD',
+    manifest: '/manifests/vod-vp9.m3u8',
+    description: 'A VOD presentation using VP9 codec in an MP4 container.'
+  },
+  {
+    name: 'AV1 VOD',
+    manifest: '/manifests/vod-av1.m3u8',
+    description: 'A VOD presentation using AV1 codec.'
+  },
+  {
+    name: 'Live Simulation',
+    manifest: '/manifests/live-sim.m3u8',
+    description: 'A simulated live presentation with a sliding window.'
+  },
+  {
+    name: 'AES-128 Encrypted VOD',
+    manifest: '/manifests/vod-aes128.m3u8',
+    description: 'A VOD presentation encrypted with AES-128.'
+  },
+  {
+    name: 'SAMPLE-AES Encrypted VOD',
+    manifest: '/manifests/vod-sample-aes.m3u8',
+    description: 'A VOD presentation encrypted with SAMPLE-AES.'
+  },
+  {
+    name: 'Audio-Only VOD',
+    manifest: '/manifests/vod-audio-only.m3u8',
+    description: 'A VOD presentation with only an audio track.'
+  },
+  {
+    name: 'Video-Only VOD',
+    manifest: '/manifests/vod-video-only.m3u8',
+    description: 'A VOD presentation with only a video track.'
+  },
+  {
+    name: 'Alternate Audio Renditions',
+    manifest: '/manifests/vod-alternate-audio.m3u8',
+    description: 'A VOD with multiple selectable audio tracks (e.g., different languages).'
+  },
+  {
+    name: 'Alternate Video Renditions (Bitrate)',
+    manifest: '/manifests/vod-alternate-video.m3u8',
+    description: 'A multivariant playlist with multiple video renditions at different bitrates.'
+  },
+  {
+    name: 'I-Frame Stream',
+    manifest: '/manifests/vod-iframe-stream.m3u8',
+    description: 'A VOD with an I-frame only stream for fast seeking.'
+  },
+  {
+    name: 'Subtitles (WebVTT)',
+    manifest: '/manifests/vod-webvtt.m3u8',
+    description: 'A VOD with WebVTT subtitles.'
+  },
+  {
+    name: 'Discontinuity',
+    manifest: '/manifests/vod-discontinuity.m3u8',
+    description: 'A VOD with a discontinuity tag between segments.'
+  },
+  {
+    name: 'BYTERANGE Support',
+    manifest: '/manifests/vod-byterange.m3u8',
+    description: 'A VOD using BYTERANGE requests to seek within a single file.'
+  },
+  {
+    name: 'Expect Fail: Invalid Segment URI',
+    manifest: '/manifests/fail-invalid-segment-uri.m3u8',
+    description: 'A media playlist pointing to a segment that does not exist.',
+    expected: 'fail'
+  },
+  {
+    name: 'Expect Fail: Mismatched Target Duration',
+    manifest: '/manifests/fail-mismatched-target-duration.m3u8',
+    description: 'A media playlist where a segment duration exceeds the target duration.',
+    expected: 'fail'
+  },
+  {
+    name: 'Expect Fail: Missing Endlist Tag (VOD)',
+    manifest: '/manifests/fail-missing-endlist.m3u8',
+    description: 'A VOD playlist that is missing the EXT-X-ENDLIST tag.',
+    expected: 'fail'
+  },
+  {
+    name: 'Expect Fail: Corrupted Segment',
+    manifest: '/manifests/fail-corrupted-segment.m3u8',
+    description: 'A media playlist with a link to a corrupted media segment.',
+    expected: 'fail'
+  },
+  {
+    name: 'Expect Fail: Unsupported Codec',
+    manifest: '/manifests/fail-unsupported-codec.m3u8',
+    description: 'A manifest declaring a codec string that is not supported by the platform.',
+    expected: 'fail'
+  },
+  {
+    name: 'Expect Fail: Cross-protocol Redirect',
+    manifest: '/manifests/fail-cross-protocol-redirect.m3u8',
+    description: 'A manifest that redirects from HTTPS to HTTP.',
+    expected: 'fail'
+  }
 ];
