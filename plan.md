@@ -62,39 +62,15 @@
     * Use ffmpeg to create a media file in the `content/` directory which is just a red square orbiting the center in a clockwise direction. The video should be 360p, and play a differently pitched beep each time the square moves another 25% around it's orbit. This file should be such that playing it repeatedly on loop is smooth from the last frame to the first. It should take 10 seconds for the square to revolve around it's orbit.
     * Use ffmpeg to split this content into HLS content both in the MP4 format as well as the TS format. Segment lengths should be 2 seconds each.
 
-13. **HLS.js Player Implementation**
-    *   In `main.js`, write a dedicated function `loadWithHlsJs(url)`.
-    *   This function will check if HLS.js is supported, create a new `Hls` instance, attach it to the video element, and load the source URL.
+13. **Network capture and injection**
+    *   Now comes the fun part! We want to be able to intercept all the network requests that the HLS player is going to make. We want to do this for logging purposes as well as being able to tweak manifests on the fly.
+    * We can use a webworker to do this, so lets build that.
 
-14. **Shaka Player Library Integration**
-    *   Download the latest Shaka Player library (e.g., `shaka-player.ui.js` and its CSS) and save it in the `vendor/` directory.
-    *   Add the necessary `<script>` and `<link>` tags for Shaka Player to `index.html`.
+14. **Reorganizing**
+    * We're going to want to share media content between manifests now, so lets reorganize the HLS content directory.
+      - Move the media files from content/ into content/[container]-[codec]/
+      - Move the manifests from content/ into manifests/[testcase], but have them still point at the content/ media files.
 
-15. **Shaka Player Implementation**
-    *   In `main.js`, write a dedicated function `loadWithShaka(url)`.
-    *   This function will initialize a Shaka Player instance, attach it to the video element, and configure it to load the HLS manifest URL.
-
-16. **Player Switching Logic**
-    *   Refactor the form's submit listener in `main.js`.
-    *   Use a `switch` statement or `if/else if` chain based on the selected player's value.
-    *   Call the appropriate function (`loadWithHlsJs`, `loadWithShaka`, or the native implementation) based on the user's choice.
-
-17. **Log Display Area**
-    *   In `index.html`, add a `<div>` that will serve as a container for logs.
-    *   In `style.css`, style this log container to be a fixed-height, scrollable box with a monospace font for readability.
-
-18. **Event Logging Implementation**
-    *   In `main.js`, create a generic `logEvent(event)` function that creates a new `<p>` tag with the event's type and appends it to the log container.
-    *   Attach this logger to the most important `<video>` element events (e.g., `playing`, `pause`, `error`, `stalled`, `progress`, `loadedmetadata`).
-
-19. **Web Component: Control Panel**
-    *   Create a `components/` directory and a `ControlPanel.js` file inside it.
-    *   Refactor the entire `<form>` (manifest input, player selection, and load button) into a self-contained `<control-panel>` Web Component.
-    *   This component should emit a custom event with the form data when the load button is clicked.
-    *   Update `index.html` and `main.js` to use this new component.
-
-20. **Web Component: Log Viewer**
-    *   Create a `components/LogViewer.js` file.
-    *   Refactor the log display `<div>` and the logging logic into a `<log-viewer>` Web Component.
-    *   The component should expose a public method like `log(message)` so that the main script can send new log entries to it.
-    *   Update `main.js` to interact with the log viewer component.
+15. **Quirky playback**
+    * In the file "/chromium/src/media/formats/hls/quirks.h" I have listed a few issues that we see in real-life manifests that are actually spec violations. Lets add a conformance test for each of these.
+    * Generate new manifests that exhibit these quirks in the manifests/ directory, and add new entried to conformance.js's hlsConformanceTests array.

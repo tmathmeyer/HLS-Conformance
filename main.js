@@ -40,11 +40,19 @@ function runSingleHlsTest(test) {
     playerContainer.appendChild(video);
 
     const logs = [];
+    const networkRequests = [];
     const originalConsoleError = console.error;
     console.error = (...args) => {
       logs.push(args.join(' '));
       originalConsoleError.apply(console, args);
     };
+
+    const messageListener = (event) => {
+      if (event.data.type === 'network_request') {
+        networkRequests.push(event.data.url);
+      }
+    };
+    navigator.serviceWorker.addEventListener('message', messageListener);
 
     const timeout = setTimeout(() => {
       finishTest({ status: 'FAIL', reason: 'Timed out' });
@@ -53,6 +61,7 @@ function runSingleHlsTest(test) {
     const finishTest = (result) => {
       clearTimeout(timeout);
       console.error = originalConsoleError;
+      navigator.serviceWorker.removeEventListener('message', messageListener);
 
       let screenshot = null;
       if (result.status === 'PASS') {
@@ -69,7 +78,7 @@ function runSingleHlsTest(test) {
       }
 
       video.remove();
-      resolve({ ...result, logs, screenshot });
+      resolve({ ...result, logs, screenshot, networkRequests });
     };
 
     video.addEventListener('error', () => {
@@ -130,15 +139,42 @@ async function runAllHlsTests() {
     el.body.innerHTML = `
       <h4>Logs:</h4>
       <pre>${result.logs.join('\n') || 'No errors logged.'}</pre>
+      <h4>Network Requests:</h4>
+      <pre>${result.networkRequests.join('\n') || 'No requests captured.'}</pre>
       ${result.screenshot ? `<h4>Screenshot:</h4><img src="${result.screenshot}" style="max-width: 100%; height: auto; border: 1px solid #ccc;">` : ''}
     `;
   }
 }
 
-function main() {
+async function main() {
   renderMseGrid();
   renderVideoGrid();
-  runAllHlsTests();
+
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('/worker.js');
+      await navigator.serviceWorker.ready;
+
+      if (!navigator.serviceWorker.controller) {
+        // This is the first load, or the worker is not yet in control.
+        // Reload the page to ensure the service worker can intercept requests.
+        console.log('Reloading page to activate service worker control.');
+        window.location.reload();
+        return; // Abort script execution to allow the page to reload
+      }
+      
+      console.log('Service worker is active and controlling the page.');
+      runAllHlsTests();
+
+    } catch (error) {
+      console.error('Service worker setup failed:', error);
+      // Run tests anyway, but worker features won't work.
+      runAllHlsTests();
+    }
+  } else {
+    // Service workers not supported.
+    runAllHlsTests();
+  }
 }
 
 main();

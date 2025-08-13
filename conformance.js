@@ -47,28 +47,13 @@ export const codecStrings = [
 
 export const hlsConformanceTests = [
   {
-    name: 'Basic VOD',
-    manifest: 'https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8',
-    description: 'A standard Video-On-Demand presentation.'
+    name: 'Basic VOD (TS)',
+    manifest: '/content/ts/manifest.m3u8',
+    description: 'A standard Video-On-Demand presentation using MPEG-2 Transport Stream segments.'
   },
   {
-    name: 'Live',
-    manifest: 'https://storage.googleapis.com/shaka-demo-assets/hls-live-layout-creator/live.m3u8',
-    description: 'A live event, the manifest will be updated periodically.'
+    name: 'Basic VOD (fMP4)',
+    manifest: '/content/fmp4/manifest.m3u8',
+    description: 'A standard Video-On-Demand presentation using fragmented MP4 segments.'
   },
-  {
-    name: 'Encrypted Content (AES-128)',
-    manifest: 'https://storage.googleapis.com/shaka-demo-assets/aes-128-hls/hls.m3u8',
-    description: 'A stream encrypted with AES-128.'
-  },
-  {
-    name: 'Trick Play (I-Frames Only)',
-    manifest: 'https://storage.googleapis.com/shaka-demo-assets/sintel-hls-for-live-player/main.m3u8',
-    description: 'Contains an I-Frame only playlist for fast-forward/rewind.'
-  },
-  {
-    name: 'Quirk: EXT-X-MEDIA with no URI',
-    manifest: 'https://storage.googleapis.com/shaka-demo-assets/hls-live-layout-creator/live.m3u8',
-    description: 'Some manifests have an EXT-X-MEDIA tag without a URI, which is a spec violation'
-  }
 ];
