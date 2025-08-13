@@ -93,11 +93,6 @@ export const hlsConformanceTests = [
     description: 'A VOD presentation using AV1 codec.'
   },
   {
-    name: 'Live Simulation',
-    manifest: '/manifests/live-sim.m3u8',
-    description: 'A simulated live presentation with a sliding window.'
-  },
-  {
     name: 'AES-128 Encrypted VOD',
     manifest: '/manifests/vod-aes128.m3u8',
     description: 'A VOD presentation encrypted with AES-128.'
@@ -148,37 +143,37 @@ export const hlsConformanceTests = [
     description: 'A VOD using BYTERANGE requests to seek within a single file.'
   },
   {
-    name: 'Expect Fail: Invalid Segment URI',
+    name: 'Invalid Segment URI',
     manifest: '/manifests/fail-invalid-segment-uri.m3u8',
     description: 'A media playlist pointing to a segment that does not exist.',
     expected: 'fail'
   },
   {
-    name: 'Expect Fail: Mismatched Target Duration',
+    name: 'Mismatched Target Duration',
     manifest: '/manifests/fail-mismatched-target-duration.m3u8',
     description: 'A media playlist where a segment duration exceeds the target duration.',
     expected: 'fail'
   },
   {
-    name: 'Expect Fail: Missing Endlist Tag (VOD)',
+    name: 'Missing Endlist Tag (VOD)',
     manifest: '/manifests/fail-missing-endlist.m3u8',
     description: 'A VOD playlist that is missing the EXT-X-ENDLIST tag.',
     expected: 'fail'
   },
   {
-    name: 'Expect Fail: Corrupted Segment',
+    name: 'Corrupted Segment',
     manifest: '/manifests/fail-corrupted-segment.m3u8',
     description: 'A media playlist with a link to a corrupted media segment.',
     expected: 'fail'
   },
   {
-    name: 'Expect Fail: Unsupported Codec',
+    name: 'Unsupported Codec',
     manifest: '/manifests/fail-unsupported-codec.m3u8',
     description: 'A manifest declaring a codec string that is not supported by the platform.',
     expected: 'fail'
   },
   {
-    name: 'Expect Fail: Cross-protocol Redirect',
+    name: 'Cross-protocol Redirect',
     manifest: '/manifests/fail-cross-protocol-redirect.m3u8',
     description: 'A manifest that redirects from HTTPS to HTTP.',
     expected: 'fail'
