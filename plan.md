@@ -81,3 +81,18 @@
     * Some of these things should be cases that _SHOULD_ fail, not just pass. You can tag these entries with some kind of expect failure label.
     * After you complete this step, I'll review your entries.
     * Aim for 20-40 new entries.
+
+17. **Adding manifests for new tests**
+    * Create manifests for each of the tests that don't have an entry.
+    * Some of the manifests will need a new set of codecs or containers, and you should generate that as well, using content/orbit.mp4 as the media source file.
+    * For Encrypted tests - there's a python script that might help in external/generate_hls.py. You probably don't want to use it directly, but there is a section on how to generate keys when keyinfo is not None. I suggest you take a similar approach.
+
+18. **Polishing the turd**
+    * First lets improve a few features:
+      - Tests which are expected to fail should have a green "fail" status bar, not a red one. If a test which is expected to fail passes, it should be red, and marked "unepected non-failure".
+      - You have "Logs" and "Network Requests" and "Screenshot" rendered for each test, lets also include every unique manifest that is loaded for each player.
+      - Lets add a little thing in the title bar that shows total/passes/failed/running test counts, and updates whenever one of the tests changes state.
+      - Lets add a little selector at the top which can toggle between "native", "hls.js", and "shakaplayer". It should default to "native" and right now the other two choices won't do anything except for pop up an alert saying "unimplemented".
+    * There are a few bugs too:
+      - Sometimes the screenshots don't work.
+      - av1 and vp9 are expected failures.

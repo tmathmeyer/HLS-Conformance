@@ -76,7 +76,6 @@ export const hlsConformanceTests = [
     manifest: '/manifests/quirk-missing-extinf-comma.m3u8',
     description: 'A media playlist where an EXTINF tag is missing its trailing comma.'
   },
-  // New Test Cases
   {
     name: 'HEVC/H.265 VOD',
     manifest: '/manifests/vod-hevc.m3u8',
