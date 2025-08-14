@@ -28,20 +28,6 @@ self.addEventListener('fetch', (event) => {
     });
   });
 
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-
-      return fetch(event.request).then((response) => {
-        const responseToCache = response.clone();
-        caches.open('hls-conformance-cache').then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return response;
-      });
-    })
-  );
+  event.respondWith(fetch(event.request));
 });
 
