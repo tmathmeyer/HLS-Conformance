@@ -21,6 +21,18 @@
     </div>
   </header>
   <main>
+    <div class="report-box custom-test-container">
+      <h3>Run a Custom Test</h3>
+      <div class="custom-test-input-group">
+        <label for="manifest-url">Manifest URL:</label>
+        <input type="url" id="manifest-url" placeholder="https://example.com/manifest.m3u8">
+      </div>
+      <div class="custom-test-input-group">
+        <label for="manifest-file">Or upload a file:</label>
+        <input type="file" id="manifest-file" accept=".m3u8">
+      </div>
+      <button id="run-custom-test-btn" class="btn">Run Custom Test</button>
+    </div>
     <details class="report-box">
       <summary>MediaSource.isTypeSupported()</summary>
       <grid-renderer id="mse-grid" title="MediaSource.isTypeSupported()"></grid-renderer>

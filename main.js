@@ -217,45 +217,102 @@ async function main() {
   renderVideoGrid();
 
   document.getElementById('hls-reports-container').addEventListener('click', (e) => {
-    if (!e.target.matches('.tab-btn')) return;
+    if (e.target.matches('.tab-btn')) {
+      const playerResultContainer = e.target.closest('.player-results');
+      if (!playerResultContainer) return;
 
-    const playerResultContainer = e.target.closest('.player-results');
-    if (!playerResultContainer) return;
+      const tab = e.target.dataset.tab;
 
-    const tab = e.target.dataset.tab;
+      const activeTab = playerResultContainer.querySelector('.tab-btn.active');
+      if (activeTab) activeTab.classList.remove('active');
+      
+      const activePane = playerResultContainer.querySelector('.tab-pane.active');
+      if (activePane) activePane.classList.remove('active');
 
-    const activeTab = playerResultContainer.querySelector('.tab-btn.active');
-    if (activeTab) activeTab.classList.remove('active');
-    
-    const activePane = playerResultContainer.querySelector('.tab-pane.active');
-    if (activePane) activePane.classList.remove('active');
-
-    e.target.classList.add('active');
-    const newPane = playerResultContainer.querySelector(`[data-pane="${tab}"]`);
-    if (newPane) newPane.classList.add('active');
+      e.target.classList.add('active');
+      const newPane = playerResultContainer.querySelector(`[data-pane="${tab}"]`);
+      if (newPane) newPane.classList.add('active');
+    } else if (e.target.matches('.open-in-new-tab-btn')) {
+      const player = e.target.dataset.player;
+      const testIndex = e.target.dataset.testIndex;
+      window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
+    } else if (e.target.matches('.rerun-btn')) {
+      const player = e.target.dataset.player;
+      const testIndex = e.target.dataset.testIndex;
+      const test = hlsConformanceTests[testIndex];
+      const el = {
+        summary: e.target.closest('.report-box').querySelector('summary'),
+        body: e.target.closest('.report-box').querySelector('.report-body'),
+        test: test,
+        index: testIndex,
+      };
+      runTest(el, player);
+    }
   });
 
-  document.getElementById('hls-reports-container').addEventListener('click', (e) => {
-    if (!e.target.matches('.open-in-new-tab-btn')) return;
+  document.getElementById('run-custom-test-btn').addEventListener('click', () => {
+    const urlInput = document.getElementById('manifest-url');
+    const fileInput = document.getElementById('manifest-file');
+    const url = urlInput.value;
+    const file = fileInput.files[0];
 
-    const player = e.target.dataset.player;
-    const testIndex = e.target.dataset.testIndex;
-    window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
-  });
+    if (!url && !file) {
+      alert('Please provide a manifest URL or upload a file.');
+      return;
+    }
 
-  document.getElementById('hls-reports-container').addEventListener('click', (e) => {
-    if (!e.target.matches('.rerun-btn')) return;
+    let manifestUrl;
+    if (url) {
+      manifestUrl = url;
+    } else {
+      manifestUrl = URL.createObjectURL(file);
+    }
 
-    const player = e.target.dataset.player;
-    const testIndex = e.target.dataset.testIndex;
-    const test = hlsConformanceTests[testIndex];
-    const el = {
-      summary: e.target.closest('.report-box').querySelector('summary'),
-      body: e.target.closest('.report-box').querySelector('.report-body'),
-      test: test,
-      index: testIndex,
+    const customTest = {
+      name: 'Custom Test',
+      manifest: manifestUrl,
+      description: url ? `URL: ${url}` : `File: ${file.name}`,
     };
-    runTest(el, player);
+
+    const container = document.getElementById('hls-reports-container');
+    const details = document.createElement('details');
+    details.className = 'report-box';
+    details.open = true;
+
+    const summary = document.createElement('summary');
+    summary.innerHTML = `
+      <div class="hls-report-summary">
+        <span><strong>${customTest.name}:</strong> ${customTest.description}</span>
+        <div class="result-group">
+          <span class="result native running">NATIVE: QUEUED</span>
+          <span class="result hlsjs running">HLS.JS: QUEUED</span>
+          <span class="result shaka-player running">SHAKA: QUEUED</span>
+        </div>
+      </div>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'report-body';
+    body.innerHTML = `
+      <div class="player-results" data-player="native"><h4>Native</h4><p>Waiting to run...</p></div>
+      <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Waiting to run...</p></div>
+      <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Waiting to run...</p></div>
+    `;
+
+    details.appendChild(summary);
+    details.appendChild(body);
+    container.prepend(details);
+
+    const el = {
+      summary: summary,
+      body: body,
+      test: customTest,
+      index: -1, // Custom test
+    };
+
+    runTest(el, 'native');
+    runTest(el, 'hls.js');
+    runTest(el, 'shaka-player');
   });
 
   if ('serviceWorker' in navigator) {
