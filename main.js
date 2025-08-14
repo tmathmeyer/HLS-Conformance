@@ -36,6 +36,7 @@ function renderVideoGrid() {
 
 async function runAllHlsTests() {
   const container = document.getElementById('hls-reports-container');
+  container.innerHTML = '';
   const testElements = hlsConformanceTests.map((test, index) => {
     const details = document.createElement('details');
     details.className = 'report-box';
