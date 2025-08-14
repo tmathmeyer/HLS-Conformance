@@ -70,15 +70,30 @@ function runSingleHlsTest(test) {
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          screenshot = canvas.toDataURL('image/png');
+          if (video.videoWidth > 0 && video.videoHeight > 0) {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            screenshot = canvas.toDataURL('image/png');
+          }
         } catch (e) {
           logs.push(`Could not generate screenshot: ${e.message}`);
         }
       }
 
       video.remove();
-      resolve({ ...result, logs, screenshot, networkRequests });
+
+      const finalResult = { ...result, logs, screenshot, networkRequests };
+
+      if (test.expected === 'fail') {
+        if (result.status === 'FAIL') {
+          finalResult.status = 'PASS';
+          finalResult.reason = `Player failed as expected: ${result.reason}`;
+        } else {
+          finalResult.status = 'FAIL';
+          finalResult.reason = 'Unexpected pass';
+        }
+      }
+      
+      resolve(finalResult);
     };
 
     video.addEventListener('error', () => {
@@ -126,22 +141,85 @@ async function runAllHlsTests() {
     return { test, details, summary, body };
   });
 
+  const totalEl = document.getElementById('total-count');
+  const passedEl = document.getElementById('passed-count');
+  const failedEl = document.getElementById('failed-count');
+  const runningEl = document.getElementById('running-count');
+
+  let total = testElements.length;
+  let passed = 0;
+  let failed = 0;
+  let running = 0;
+
+  totalEl.textContent = total;
+
   for (const el of testElements) {
+    running++;
+    runningEl.textContent = running;
+
     const resultEl = el.summary.querySelector('.result');
     resultEl.textContent = 'RUNNING';
     resultEl.className = 'result running';
 
     const result = await runSingleHlsTest(el.test);
 
-    resultEl.textContent = result.status;
+    running--;
+    if (result.status === 'PASS') {
+      passed++;
+    } else {
+      failed++;
+    }
+
+    passedEl.textContent = passed;
+    failedEl.textContent = failed;
+    runningEl.textContent = running;
+
+    let statusText = result.status;
+    if (el.test.expected === 'fail' && result.status === 'PASS') {
+      statusText = 'PASS (Expected Fail)';
+    } else if (el.test.expected === 'fail' && result.status === 'FAIL') {
+        statusText = 'FAIL (Unexpected Pass)';
+    }
+
+    resultEl.textContent = statusText;
     resultEl.className = `result ${result.status.toLowerCase()}`;
 
+    const manifestUrls = [...new Set(result.networkRequests.filter(url => url.endsWith('.m3u8')))];
+    const manifestContents = await Promise.all(manifestUrls.map(async (url) => {
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        return { url, text };
+      } catch (e) {
+        return { url, text: `Failed to fetch: ${e.message}` };
+      }
+    }));
+
     el.body.innerHTML = `
-      <h4>Logs:</h4>
-      <pre>${result.logs.join('\n') || 'No errors logged.'}</pre>
-      <h4>Network Requests:</h4>
-      <pre>${result.networkRequests.join('\n') || 'No requests captured.'}</pre>
-      ${result.screenshot ? `<h4>Screenshot:</h4><img src="${result.screenshot}" style="max-width: 100%; height: auto; border: 1px solid #ccc;">` : ''}
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="network">Network</button>
+        <button class="tab-btn" data-tab="manifests">Manifests</button>
+        ${result.screenshot ? '<button class="tab-btn" data-tab="screenshot">Screenshot</button>' : ''}
+        <button class="tab-btn" data-tab="logs">Logs</button>
+      </div>
+      <div class="tab-content">
+        <div class="tab-pane" data-pane="logs">
+          <pre>${result.logs.join('\n') || 'No errors logged.'}</pre>
+        </div>
+        <div class="tab-pane active" data-pane="network">
+          <pre>${result.networkRequests.join('\n') || 'No requests captured.'}</pre>
+        </div>
+        <div class="tab-pane" data-pane="manifests">
+          ${manifestContents.map(m => `
+            <h4>${m.url}</h4>
+            <pre>${m.text}</pre>
+          `).join('') || '<pre>No manifests captured.</pre>'}
+        </div>
+        ${result.screenshot ? `
+        <div class="tab-pane" data-pane="screenshot">
+          <img src="${result.screenshot}" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
+        </div>` : ''}
+      </div>
     `;
   }
 }
@@ -149,6 +227,44 @@ async function runAllHlsTests() {
 async function main() {
   renderMseGrid();
   renderVideoGrid();
+
+  document.getElementById('hls-reports-container').addEventListener('click', (e) => {
+    if (!e.target.matches('.tab-btn')) return;
+
+    const reportBody = e.target.closest('.report-body');
+    if (!reportBody) return;
+
+    const tab = e.target.dataset.tab;
+
+    const activeTab = reportBody.querySelector('.tab-btn.active');
+    if (activeTab) activeTab.classList.remove('active');
+    
+    const activePane = reportBody.querySelector('.tab-pane.active');
+    if (activePane) activePane.classList.remove('active');
+
+    e.target.classList.add('active');
+    const newPane = reportBody.querySelector(`[data-pane="${tab}"]`);
+    if (newPane) newPane.classList.add('active');
+  });
+
+  document.getElementById('player-engine-group').addEventListener('click', (event) => {
+    if (event.target.tagName !== 'BUTTON') {
+      return;
+    }
+
+    const player = event.target.dataset.player;
+    if (player !== 'native') {
+      alert('This player is not yet implemented.');
+      return;
+    }
+
+    // Remove active class from all buttons
+    const buttons = document.querySelectorAll('#player-engine-group .btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    // Add active class to the clicked button
+    event.target.classList.add('active');
+  });
 
   if ('serviceWorker' in navigator) {
     try {

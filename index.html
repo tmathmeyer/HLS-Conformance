@@ -8,7 +8,24 @@
 </head>
 <body>
   <header>
-    <h1>HLS Conformance Tester</h1>
+    <div class="header-content">
+      <h1>HLS Conformance Tester</h1>
+      <div class="header-right">
+        <div class="test-counts">
+          <span>Total: <span id="total-count">0</span></span>
+          <span>Passed: <span id="passed-count">0</span></span>
+          <span>Failed: <span id="failed-count">0</span></span>
+          <span>Running: <span id="running-count">0</span></span>
+        </div>
+        <div class="player-selector">
+          <div class="btn-group" id="player-engine-group">
+            <button class="btn active" data-player="native">Native</button>
+            <button class="btn" data-player="hls.js">hls.js</button>
+            <button class="btn" data-player="shaka-player">Shaka Player</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
   <main>
     <details class="report-box">

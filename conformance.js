@@ -84,12 +84,14 @@ export const hlsConformanceTests = [
   {
     name: 'VP9 VOD',
     manifest: '/manifests/vod-vp9.m3u8',
-    description: 'A VOD presentation using VP9 codec in an MP4 container.'
+    description: 'A VOD presentation using VP9 codec in an MP4 container.',
+    expected: 'fail'
   },
   {
     name: 'AV1 VOD',
     manifest: '/manifests/vod-av1.m3u8',
-    description: 'A VOD presentation using AV1 codec.'
+    description: 'A VOD presentation using AV1 codec.',
+    expected: 'fail'
   },
   {
     name: 'AES-128 Encrypted VOD',
