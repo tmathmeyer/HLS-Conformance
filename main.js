@@ -212,10 +212,26 @@ async function runAllHlsTests() {
   next();
 }
 
+function filterTests() {
+  const filterText = document.getElementById('test-filter').value.toLowerCase();
+  const reports = document.querySelectorAll('#hls-reports-container .report-box');
+  reports.forEach(report => {
+    const name = report.querySelector('strong').textContent.toLowerCase();
+    const description = report.querySelector('span:first-child').textContent.toLowerCase();
+    if (name.includes(filterText) || description.includes(filterText)) {
+      report.style.display = '';
+    } else {
+      report.style.display = 'none';
+    }
+  });
+}
+
 async function main() {
   renderMseGrid();
   renderVideoGrid();
 
+  document.getElementById('test-filter').addEventListener('input', filterTests);
+  
   document.getElementById('hls-reports-container').addEventListener('click', (e) => {
     if (e.target.matches('.tab-btn')) {
       const playerResultContainer = e.target.closest('.player-results');

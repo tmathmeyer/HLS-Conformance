@@ -180,6 +180,22 @@ summary::before {
   margin-top: 10px;
 }
 
+.filter-container {
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.filter-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.filter-container input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
 .hls-report-summary {
   display: flex;
   justify-content: space-between;
