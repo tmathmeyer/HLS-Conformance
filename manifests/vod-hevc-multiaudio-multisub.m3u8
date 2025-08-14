@@ -1,0 +1,7 @@
+#EXTM3U
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="AAC",DEFAULT=YES,URI="../content/audio-only-aac/manifest.m3u8"
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="AAC Low",DEFAULT=NO,URI="../content/audio-only-aac-low/manifest.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="English",DEFAULT=YES,AUTOSELECT=YES,LANGUAGE="en",URI="../content/subtitles.vtt"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="French",DEFAULT=NO,AUTOSELECT=YES,LANGUAGE="fr",URI="../content/subtitles_fr.vtt"
+#EXT-X-STREAM-INF:BANDWIDTH=1280000,AVERAGE-BANDWIDTH=1000000,CODECS="hvc1.1.6.L93.B0",AUDIO="audio",SUBTITLES="subs"
+../content/ts-hevc-aac/manifest.m3u8

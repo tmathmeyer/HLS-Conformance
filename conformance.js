@@ -178,5 +178,40 @@ export const hlsConformanceTests = [
     manifest: '/manifests/fail-cross-protocol-redirect.m3u8',
     description: 'A manifest that redirects from HTTPS to HTTP.',
     expected: 'fail'
+  },
+  {
+    name: 'HEVC with Multiple Audio/Subtitle Renditions',
+    manifest: '/manifests/vod-hevc-multiaudio-multisub.m3u8',
+    description: 'A multivariant playlist with HEVC video and multiple audio and subtitle renditions.'
+  },
+  {
+    name: 'Floating-Point Durations',
+    manifest: '/manifests/vod-float-duration.m3u8',
+    description: 'A media playlist with floating-point durations for segments.'
+  },
+  {
+    name: 'ID3 Metadata',
+    manifest: '/manifests/vod-id3.m3u8',
+    description: 'A media playlist with ID3 metadata tags.'
+  },
+  {
+    name: '16x9 Aspect Ratio',
+    manifest: '/manifests/vod-16x9.m3u8',
+    description: 'A VOD presentation with a 16x9 aspect ratio.'
+  },
+  {
+    name: '4x3 Aspect Ratio',
+    manifest: '/manifests/vod-4x3.m3u8',
+    description: 'A VOD presentation with a 4x3 aspect ratio.'
+  },
+  {
+    name: 'Closed Captions',
+    manifest: '/manifests/vod-closed-captions.m3u8',
+    description: 'A VOD presentation with closed captions.'
+  },
+  {
+    name: 'Alternate Video Renditions',
+    manifest: '/manifests/vod-alternate-video-renditions.m3u8',
+    description: 'A multivariant playlist with multiple video renditions at different resolutions, frame rates, and codecs.'
   }
 ];

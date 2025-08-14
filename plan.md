@@ -96,3 +96,8 @@
     * There are a few bugs too:
       - Sometimes the screenshots don't work.
       - av1 and vp9 are expected failures.
+
+19. **More Test Content**
+    * The SAMPLE-AES content is still missing (unable to generate with ffmpeg)
+    * Figure out how to generate some encrypted content for other key systems, like widevine. (unable to generate without a key server)
+    * There are some good ideas for example tests on the apple site here: https://developer.apple.com/streaming/examples/. Use this to make 10 new tests that are unlike the other tests you've made, or if you can't make 10, tell me why.
