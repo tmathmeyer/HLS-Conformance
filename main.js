@@ -174,7 +174,7 @@ async function runAllHlsTests() {
           `).join('') || '<pre>No manifests captured.</pre>'}
         </div>
         <div class="tab-pane" data-pane="timeline">
-          <pre>${result.timelineEvents.sort((a,b) => a.timestamp - b.timestamp).map(e => `${new Date(e.timestamp).toISOString()} [${e.type}] ${typeof e.data === 'string' ? e.data : JSON.stringify(e.data)}`).join('\n')}</pre>
+          <pre>${result.timelineEvents.filter(e => e && e.timestamp).sort((a,b) => a.timestamp - b.timestamp).map(e => `${new Date(e.timestamp).toISOString()} [${e.type}] ${typeof e.data === 'string' ? e.data : JSON.stringify(e.data)}`).join('\n')}</pre>
         </div>
         ${result.screenshot ? `
         <div class="tab-pane" data-pane="screenshot">
