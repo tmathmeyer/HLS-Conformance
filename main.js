@@ -34,6 +34,11 @@ function renderVideoGrid() {
 
 
 
+let passed = 0;
+let failed = 0;
+let running = 0;
+let passedEl, failedEl, runningEl;
+
 async function runAllHlsTests() {
   const container = document.getElementById('hls-reports-container');
   container.innerHTML = '';
@@ -69,16 +74,20 @@ async function runAllHlsTests() {
   });
 
   const totalEl = document.getElementById('total-count');
-  const passedEl = document.getElementById('passed-count');
-  const failedEl = document.getElementById('failed-count');
-  const runningEl = document.getElementById('running-count');
+  passedEl = document.getElementById('passed-count');
+  failedEl = document.getElementById('failed-count');
+  runningEl = document.getElementById('running-count');
 
   let total = testElements.length * 3;
-  let passed = 0;
-  let failed = 0;
-  let running = 0;
+  passed = 0;
+  failed = 0;
+  running = 0;
 
   totalEl.textContent = total;
+  passedEl.textContent = passed;
+  failedEl.textContent = failed;
+  runningEl.textContent = running;
+
 
   const results = {};
   window.addEventListener('message', (event) => {
