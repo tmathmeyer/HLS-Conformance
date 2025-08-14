@@ -24,6 +24,7 @@ self.addEventListener('fetch', (event) => {
         type: 'network_request',
         url: event.request.url,
         testId: testId,
+        timestamp: Date.now(),
       });
     });
   });

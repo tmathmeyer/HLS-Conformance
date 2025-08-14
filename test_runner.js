@@ -8,18 +8,35 @@ async function runSingleHlsTest(test, testId, player) {
 
     const logs = [];
     const networkRequests = [];
+    const timelineEvents = [];
     const originalConsoleError = console.error;
     console.error = (...args) => {
-      logs.push(args.join(' '));
+      const message = args.join(' ');
+      logs.push(message);
+      timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
       originalConsoleError.apply(console, args);
     };
 
     const messageListener = (event) => {
       if (event.data.type === 'network_request' && event.data.testId === testId) {
         networkRequests.push(event.data.url);
+        timelineEvents.push({timestamp: event.data.timestamp, type: 'network', data: event.data.url});
       }
     };
     navigator.serviceWorker.addEventListener('message', messageListener);
+
+    const videoEvents = [
+      'loadstart', 'progress', 'suspend', 'abort', 'error', 'emptied', 
+      'stalled', 'play', 'pause', 'loadedmetadata', 'loadeddata', 'waiting', 
+      'playing', 'canplay', 'canplaythrough', 'seeking', 'seeked', 
+      'timeupdate', 'ended', 'ratechange', 'durationchange', 'volumechange'
+    ];
+
+    videoEvents.forEach(eventName => {
+      video.addEventListener(eventName, (event) => {
+        timelineEvents.push({timestamp: Date.now(), type: 'video-event', data: event.type});
+      });
+    });
 
     const timeout = setTimeout(() => {
       finishTest({ status: 'FAIL', reason: 'Timed out' });
@@ -46,7 +63,7 @@ async function runSingleHlsTest(test, testId, player) {
         }
       }
 
-      const finalResult = { ...result, logs, screenshot, networkRequests };
+      const finalResult = { ...result, logs, screenshot, networkRequests, timelineEvents };
 
       if (test.expected === 'fail') {
         if (result.status === 'FAIL') {
@@ -63,7 +80,9 @@ async function runSingleHlsTest(test, testId, player) {
 
     video.addEventListener('error', () => {
       const error = video.error;
-      logs.push(`Video Error: code ${error.code}, message: ${error.message}`);
+      const message = `Video Error: code ${error.code}, message: ${error.message}`;
+      logs.push(message);
+      timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
       finishTest({ status: 'FAIL', reason: 'Player error' });
     });
 
@@ -72,7 +91,9 @@ async function runSingleHlsTest(test, testId, player) {
         // Let it play for a moment to get a frame
         setTimeout(() => finishTest({ status: 'PASS' }), 500);
       }).catch(e => {
-        logs.push(`Play promise rejected: ${e.message}`);
+        const message = `Play promise rejected: ${e.message}`;
+        logs.push(message);
+        timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
         finishTest({ status: 'FAIL', reason: 'Could not play' });
       });
     });
@@ -83,29 +104,53 @@ async function runSingleHlsTest(test, testId, player) {
           debug: true,
         });
         hls.on(Hls.Events.ERROR, function (event, data) {
-          logs.push(`HLS.js log: ${data.type} - ${data.details}`);
+          const message = `HLS.js log: ${data.type} - ${data.details}`;
+          logs.push(message);
+          timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
           if (data.fatal) {
             finishTest({ status: 'FAIL', reason: 'HLS.js fatal error' });
           }
         });
+        Object.values(Hls.Events).forEach(eventName => {
+          hls.on(eventName, (event, data) => {
+            try {
+              timelineEvents.push({timestamp: Date.now(), type: 'hls-event', data: { eventName, data: JSON.parse(JSON.stringify(data)) }});
+            } catch(e) {
+              // data has circular references, so we can't serialize it.
+              // This is fine, we'll just skip it.
+            }
+          });
+        });
         hls.loadSource(test.manifest);
         hls.attachMedia(video);
       } else {
-        logs.push('HLS.js is not supported');
+        const message = 'HLS.js is not supported';
+        logs.push(message);
+        timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
         finishTest({ status: 'FAIL', reason: 'HLS.js not supported' });
       }
     } else if (player === 'shaka-player') {
       if (shaka.Player.isBrowserSupported()) {
+        shaka.log.setLevel(shaka.log.Level.V2);
+        shaka.log.v2 = (...args) => {
+          const message = `Shaka Player log: ${args.join(' ')}`;
+          logs.push(message);
+          timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
+        };
         const shakaPlayer = new shaka.Player(video);
         shakaPlayer.addEventListener('error', (event) => {
-          logs.push(`Shaka Player Error: ${event.detail.code}`);
+          const message = `Shaka Player Error: ${event.detail.code}`;
+          logs.push(message);
+          timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
           finishTest({ status: 'FAIL', reason: 'Shaka Player error' });
         });
         shakaPlayer.load(test.manifest).catch(() => {
           // error is handled by the event listener
         });
       } else {
-        logs.push('Shaka Player is not supported');
+        const message = 'Shaka Player is not supported';
+        logs.push(message);
+        timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
         finishTest({ status: 'FAIL', reason: 'Shaka Player not supported' });
       }
     } else {

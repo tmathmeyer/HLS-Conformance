@@ -156,6 +156,7 @@ async function runAllHlsTests() {
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="network">Network</button>
         <button class="tab-btn" data-tab="manifests">Manifests</button>
+        <button class="tab-btn" data-tab="timeline">Timeline</button>
         ${result.screenshot ? '<button class="tab-btn" data-tab="screenshot">Screenshot</button>' : ''}
         <button class="tab-btn" data-tab="logs">Logs</button>
       </div>
@@ -171,6 +172,9 @@ async function runAllHlsTests() {
             <h4>${m.url}</h4>
             <pre>${m.text}</pre>
           `).join('') || '<pre>No manifests captured.</pre>'}
+        </div>
+        <div class="tab-pane" data-pane="timeline">
+          <pre>${result.timelineEvents.sort((a,b) => a.timestamp - b.timestamp).map(e => `${new Date(e.timestamp).toISOString()} [${e.type}] ${typeof e.data === 'string' ? e.data : JSON.stringify(e.data)}`).join('\n')}</pre>
         </div>
         ${result.screenshot ? `
         <div class="tab-pane" data-pane="screenshot">
