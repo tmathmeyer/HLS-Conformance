@@ -1,7 +1,7 @@
 
 import { hlsConformanceTests } from './conformance.js';
 
-async function runSingleHlsTest(test, testId) {
+async function runSingleHlsTest(test, testId, player) {
   return new Promise((resolve) => {
     const video = document.querySelector('video');
     video.muted = true; // Ensure autoplay works
@@ -77,7 +77,24 @@ async function runSingleHlsTest(test, testId) {
       });
     });
 
-    video.src = test.manifest;
+    if (player === 'hls.js') {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(test.manifest);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          if (data.fatal) {
+            logs.push(`HLS.js Error: ${data.type} - ${data.details}`);
+            finishTest({ status: 'FAIL', reason: 'HLS.js fatal error' });
+          }
+        });
+      } else {
+        logs.push('HLS.js is not supported');
+        finishTest({ status: 'FAIL', reason: 'HLS.js not supported' });
+      }
+    } else {
+      video.src = test.manifest;
+    }
   });
 }
 
@@ -86,11 +103,12 @@ async function main() {
   const urlParams = new URLSearchParams(window.location.search);
   const testIndex = parseInt(urlParams.get('testIndex'), 10);
   const testId = urlParams.get('testId');
+  const player = urlParams.get('player');
 
   const { hlsConformanceTests } = await import('./conformance.js');
   const test = hlsConformanceTests[testIndex];
 
-  const result = await runSingleHlsTest(test, testId);
+  const result = await runSingleHlsTest(test, testId, player);
 
   window.parent.postMessage({ type: 'test_result', testId, result, testIndex}, '*');
 }

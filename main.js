@@ -87,10 +87,11 @@ async function runAllHlsTests() {
     resultEl.textContent = 'RUNNING';
     resultEl.className = 'result running';
 
+    const player = document.querySelector('#player-engine-group .btn.active').dataset.player;
     const testId = `test-${el.index}-${Date.now()}`;
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
-    iframe.src = `test_runner.html?testIndex=${el.index}&testId=${testId}`;
+    iframe.src = `test_runner.html?testIndex=${el.index}&testId=${testId}&player=${player}`;
     document.body.appendChild(iframe);
 
     const wait = () => new Promise(resolve => {
@@ -212,18 +213,13 @@ async function main() {
       return;
     }
 
-    const player = event.target.dataset.player;
-    if (player !== 'native') {
-      alert('This player is not yet implemented.');
-      return;
-    }
-
     // Remove active class from all buttons
     const buttons = document.querySelectorAll('#player-engine-group .btn');
     buttons.forEach(btn => btn.classList.remove('active'));
 
     // Add active class to the clicked button
     event.target.classList.add('active');
+    runAllHlsTests();
   });
 
   if ('serviceWorker' in navigator) {
