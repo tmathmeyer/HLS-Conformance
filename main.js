@@ -32,93 +32,11 @@ function renderVideoGrid() {
   grid.setAttribute('data', JSON.stringify(data));
 }
 
-function runSingleHlsTest(test) {
-  return new Promise((resolve) => {
-    const playerContainer = document.getElementById('player-container');
-    const video = document.createElement('video');
-    video.muted = true; // Ensure autoplay works
-    playerContainer.appendChild(video);
 
-    const logs = [];
-    const networkRequests = [];
-    const originalConsoleError = console.error;
-    console.error = (...args) => {
-      logs.push(args.join(' '));
-      originalConsoleError.apply(console, args);
-    };
-
-    const messageListener = (event) => {
-      if (event.data.type === 'network_request') {
-        networkRequests.push(event.data.url);
-      }
-    };
-    navigator.serviceWorker.addEventListener('message', messageListener);
-
-    const timeout = setTimeout(() => {
-      finishTest({ status: 'FAIL', reason: 'Timed out' });
-    }, 15000); // 15 second timeout
-
-    const finishTest = (result) => {
-      clearTimeout(timeout);
-      console.error = originalConsoleError;
-      navigator.serviceWorker.removeEventListener('message', messageListener);
-
-      let screenshot = null;
-      if (result.status === 'PASS') {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          const ctx = canvas.getContext('2d');
-          if (video.videoWidth > 0 && video.videoHeight > 0) {
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            screenshot = canvas.toDataURL('image/png');
-          }
-        } catch (e) {
-          logs.push(`Could not generate screenshot: ${e.message}`);
-        }
-      }
-
-      video.remove();
-
-      const finalResult = { ...result, logs, screenshot, networkRequests };
-
-      if (test.expected === 'fail') {
-        if (result.status === 'FAIL') {
-          finalResult.status = 'PASS';
-          finalResult.reason = `Player failed as expected: ${result.reason}`;
-        } else {
-          finalResult.status = 'FAIL';
-          finalResult.reason = 'Unexpected pass';
-        }
-      }
-      
-      resolve(finalResult);
-    };
-
-    video.addEventListener('error', () => {
-      const error = video.error;
-      logs.push(`Video Error: code ${error.code}, message: ${error.message}`);
-      finishTest({ status: 'FAIL', reason: 'Player error' });
-    });
-
-    video.addEventListener('canplay', () => {
-      video.play().then(() => {
-        // Let it play for a moment to get a frame
-        setTimeout(() => finishTest({ status: 'PASS' }), 500);
-      }).catch(e => {
-        logs.push(`Play promise rejected: ${e.message}`);
-        finishTest({ status: 'FAIL', reason: 'Could not play' });
-      });
-    });
-
-    video.src = test.manifest;
-  });
-}
 
 async function runAllHlsTests() {
   const container = document.getElementById('hls-reports-container');
-  const testElements = hlsConformanceTests.map(test => {
+  const testElements = hlsConformanceTests.map((test, index) => {
     const details = document.createElement('details');
     details.className = 'report-box';
 
@@ -138,7 +56,7 @@ async function runAllHlsTests() {
     details.appendChild(body);
     container.appendChild(details);
 
-    return { test, details, summary, body };
+    return { test, details, summary, body, index };
   });
 
   const totalEl = document.getElementById('total-count');
@@ -153,7 +71,15 @@ async function runAllHlsTests() {
 
   totalEl.textContent = total;
 
-  for (const el of testElements) {
+  const results = {};
+  window.addEventListener('message', (event) => {
+    if (event.data.type === 'test_result') {
+      const { testId, result, testIndex } = event.data;
+      results[testId] = { result, testIndex };
+    }
+  });
+
+  const runTest = async (el) => {
     running++;
     runningEl.textContent = running;
 
@@ -161,8 +87,24 @@ async function runAllHlsTests() {
     resultEl.textContent = 'RUNNING';
     resultEl.className = 'result running';
 
-    const result = await runSingleHlsTest(el.test);
+    const testId = `test-${el.index}-${Date.now()}`;
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = `test_runner.html?testIndex=${el.index}&testId=${testId}`;
+    document.body.appendChild(iframe);
 
+    const wait = () => new Promise(resolve => {
+      const interval = setInterval(() => {
+        if (results[testId]) {
+          clearInterval(interval);
+          resolve(results[testId].result);
+          iframe.remove();
+        }
+      }, 100);
+    });
+
+    const result = await wait();
+    
     running--;
     if (result.status === 'PASS') {
       passed++;
@@ -221,7 +163,25 @@ async function runAllHlsTests() {
         </div>` : ''}
       </div>
     `;
-  }
+  };
+
+  // Run up to 5 tests in parallel
+  const limit = 5;
+  const queue = [...testElements];
+  const active = [];
+
+  const next = () => {
+    while (active.length < limit && queue.length > 0) {
+      const el = queue.shift();
+      const promise = runTest(el).then(() => {
+        active.splice(active.indexOf(promise), 1);
+        next();
+      });
+      active.push(promise);
+    }
+  };
+
+  next();
 }
 
 async function main() {
