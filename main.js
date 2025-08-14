@@ -47,7 +47,7 @@ async function runAllHlsTests() {
         <span><strong>${test.name}:</strong> ${test.description}</span>
         <div class="result-group">
           <span class="result native running">NATIVE: QUEUED</span>
-          <span class="result hls-js running">HLS.JS: QUEUED</span>
+          <span class="result hlsjs running">HLS.JS: QUEUED</span>
           <span class="result shaka-player running">SHAKA: QUEUED</span>
         </div>
       </div>
@@ -92,9 +92,9 @@ async function runAllHlsTests() {
     running++;
     runningEl.textContent = running;
 
-    const resultEl = el.summary.querySelector(`.result.${player.replace('.','')}`);
+    const resultEl = el.summary.querySelector(`.result.${player.replace('.', '')}`);
     resultEl.textContent = `${player.toUpperCase()}: RUNNING`;
-    resultEl.className = `result ${player.replace('.','')} running`;
+    resultEl.className = `result ${player.replace('.', '')} running`;
 
     const testId = `test-${el.index}-${player}-${Date.now()}`;
     const iframe = document.createElement('iframe');
@@ -133,7 +133,7 @@ async function runAllHlsTests() {
     }
 
     resultEl.textContent = `${player.toUpperCase()}: ${statusText}`;
-    resultEl.className = `result ${player.replace('.','')} ${result.status.toLowerCase()}`;
+    resultEl.className = `result ${player.replace('.', '')} ${result.status.toLowerCase()}`;
 
     const playerResultContainer = el.body.querySelector(`.player-results[data-player="${player}"]`);
 
