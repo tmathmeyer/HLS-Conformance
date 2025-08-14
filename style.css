@@ -213,7 +213,12 @@ summary::before {
   padding: 0;
 }
 
-.open-in-new-tab-btn {
+.player-result-header div {
+  display: flex;
+  gap: 10px;
+}
+
+.open-in-new-tab-btn, .rerun-btn {
   padding: 3px 8px;
   font-size: 0.8em;
   cursor: pointer;

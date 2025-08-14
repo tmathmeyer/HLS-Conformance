@@ -151,7 +151,10 @@ async function runAllHlsTests() {
     playerResultContainer.innerHTML = `
       <div class="player-result-header">
         <h4>${player.toUpperCase()}</h4>
-        <button class="open-in-new-tab-btn" data-player="${player}" data-test-index="${el.index}">Open in New Tab</button>
+        <div>
+          <button class="rerun-btn" data-player="${player}" data-test-index="${el.index}">Rerun</button>
+          <button class="open-in-new-tab-btn" data-player="${player}" data-test-index="${el.index}">Open in New Tab</button>
+        </div>
       </div>
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="network">Network</button>
@@ -238,6 +241,21 @@ async function main() {
     const player = e.target.dataset.player;
     const testIndex = e.target.dataset.testIndex;
     window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
+  });
+
+  document.getElementById('hls-reports-container').addEventListener('click', (e) => {
+    if (!e.target.matches('.rerun-btn')) return;
+
+    const player = e.target.dataset.player;
+    const testIndex = e.target.dataset.testIndex;
+    const test = hlsConformanceTests[testIndex];
+    const el = {
+      summary: e.target.closest('.report-box').querySelector('summary'),
+      body: e.target.closest('.report-box').querySelector('.report-body'),
+      test: test,
+      index: testIndex,
+    };
+    runTest(el, player);
   });
 
   if ('serviceWorker' in navigator) {
