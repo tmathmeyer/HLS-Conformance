@@ -180,8 +180,8 @@ async function runAllHlsTests() {
     `
   };
 
-  // Run up to 20 tests in parallel
-  const limit = 20;
+  // Run up to 10 tests in parallel
+  const limit = 10;
   const queue = [];
   for (const el of testElements) {
     queue.push({el, player: 'native'});

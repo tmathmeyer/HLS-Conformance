@@ -213,5 +213,25 @@ export const hlsConformanceTests = [
     name: 'Alternate Video Renditions',
     manifest: '/manifests/vod-alternate-video-renditions.m3u8',
     description: 'A multivariant playlist with multiple video renditions at different resolutions, frame rates, and codecs.'
+  },
+  {
+    name: 'Quirk: ENDLIST in Multivariant Playlist (TS)',
+    manifest: '/manifests/quirk-endlist-in-multivariant-ts.m3u8',
+    description: 'A multivariant playlist with a trailing EXT-X-ENDLIST tag, which is a spec violation, using TS segments.'
+  },
+  {
+    name: 'Quirk: Duplicate Rendition Names (TS)',
+    manifest: '/manifests/quirk-duplicate-rendition-names-ts.m3u8',
+    description: 'A manifest with multiple audio renditions in the same group using the same NAME attribute, using TS segments.'
+  },
+  {
+    name: 'Quirk: Multiple Default Renditions (TS)',
+    manifest: '/manifests/quirk-multiple-default-renditions-ts.m3u8',
+    description: 'A manifest with multiple audio renditions in the same group marked as DEFAULT=YES, using TS segments.'
+  },
+  {
+    name: 'Quirk: Missing EXTINF Comma (TS)',
+    manifest: '/manifests/quirk-missing-extinf-comma-ts.m3u8',
+    description: 'A media playlist where an EXTINF tag is missing its trailing comma, using TS segments.'
   }
 ];
