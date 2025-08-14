@@ -131,12 +131,14 @@ async function runSingleHlsTest(test, testId, player) {
       }
     } else if (player === 'shaka-player') {
       if (shaka.Player.isBrowserSupported()) {
-        shaka.log.setLevel(shaka.log.Level.V2);
-        shaka.log.v2 = (...args) => {
-          const message = `Shaka Player log: ${args.join(' ')}`;
-          logs.push(message);
-          timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
-        };
+        if (shaka.log) {
+          shaka.log.setLevel(shaka.log.Level.V2);
+          shaka.log.v2 = (...args) => {
+            const message = `Shaka Player log: ${args.join(' ')}`;
+            logs.push(message);
+            timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
+          };
+        }
         const shakaPlayer = new shaka.Player(video);
         shakaPlayer.addEventListener('error', (event) => {
           const message = `Shaka Player Error: ${event.detail.code}`;
