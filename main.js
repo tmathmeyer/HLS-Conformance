@@ -55,7 +55,11 @@ async function runAllHlsTests() {
 
     const body = document.createElement('div');
     body.className = 'report-body';
-    body.textContent = 'Waiting to run...';
+    body.innerHTML = `
+      <div class="player-results" data-player="native"><h4>Native</h4><p>Waiting to run...</p></div>
+      <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Waiting to run...</p></div>
+      <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Waiting to run...</p></div>
+    `;
 
     details.appendChild(summary);
     details.appendChild(body);
@@ -131,6 +135,8 @@ async function runAllHlsTests() {
     resultEl.textContent = `${player.toUpperCase()}: ${statusText}`;
     resultEl.className = `result ${player.replace('.','')} ${result.status.toLowerCase()}`;
 
+    const playerResultContainer = el.body.querySelector(`.player-results[data-player="${player}"]`);
+
     const manifestUrls = [...new Set(result.networkRequests.filter(url => url.endsWith('.m3u8')))];
     const manifestContents = await Promise.all(manifestUrls.map(async (url) => {
       try {
@@ -142,7 +148,8 @@ async function runAllHlsTests() {
       }
     }));
 
-    el.body.innerHTML = `
+    playerResultContainer.innerHTML = `
+      <h4>${player.toUpperCase()}</h4>
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="network">Network</button>
         <button class="tab-btn" data-tab="manifests">Manifests</button>
@@ -202,19 +209,19 @@ async function main() {
   document.getElementById('hls-reports-container').addEventListener('click', (e) => {
     if (!e.target.matches('.tab-btn')) return;
 
-    const reportBody = e.target.closest('.report-body');
-    if (!reportBody) return;
+    const playerResultContainer = e.target.closest('.player-results');
+    if (!playerResultContainer) return;
 
     const tab = e.target.dataset.tab;
 
-    const activeTab = reportBody.querySelector('.tab-btn.active');
+    const activeTab = playerResultContainer.querySelector('.tab-btn.active');
     if (activeTab) activeTab.classList.remove('active');
     
-    const activePane = reportBody.querySelector('.tab-pane.active');
+    const activePane = playerResultContainer.querySelector('.tab-pane.active');
     if (activePane) activePane.classList.remove('active');
 
     e.target.classList.add('active');
-    const newPane = reportBody.querySelector(`[data-pane="${tab}"]`);
+    const newPane = playerResultContainer.querySelector(`[data-pane="${tab}"]`);
     if (newPane) newPane.classList.add('active');
   });
 

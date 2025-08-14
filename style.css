@@ -178,9 +178,26 @@ summary::before {
 }
 
 .report-body {
-  padding: 0.5rem 1rem 1rem 1rem;
+  padding: 15px;
   border-top: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
+
+.player-results {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.player-results h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
 
 .report-body h4 {
   margin-top: 0;
