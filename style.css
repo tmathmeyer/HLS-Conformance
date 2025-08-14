@@ -158,12 +158,16 @@ summary::before {
   width: 100%;
 }
 
+.result-group {
+  display: flex;
+  gap: 10px;
+}
+
 .result {
+  padding: 5px 10px;
+  border-radius: 5px;
   font-weight: bold;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  color: white;
-  font-size: 0.9rem;
+  font-size: 0.9em;
 }
 
 .result.pass { background-color: #28a745; }

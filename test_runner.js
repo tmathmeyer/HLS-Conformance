@@ -92,6 +92,20 @@ async function runSingleHlsTest(test, testId, player) {
         logs.push('HLS.js is not supported');
         finishTest({ status: 'FAIL', reason: 'HLS.js not supported' });
       }
+    } else if (player === 'shaka-player') {
+      if (shaka.Player.isBrowserSupported()) {
+        const shakaPlayer = new shaka.Player(video);
+        shakaPlayer.addEventListener('error', (event) => {
+          logs.push(`Shaka Player Error: ${event.detail.code}`);
+          finishTest({ status: 'FAIL', reason: 'Shaka Player error' });
+        });
+        shakaPlayer.load(test.manifest).catch(() => {
+          // error is handled by the event listener
+        });
+      } else {
+        logs.push('Shaka Player is not supported');
+        finishTest({ status: 'FAIL', reason: 'Shaka Player not supported' });
+      }
     } else {
       video.src = test.manifest;
     }

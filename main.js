@@ -45,7 +45,11 @@ async function runAllHlsTests() {
     summary.innerHTML = `
       <div class="hls-report-summary">
         <span><strong>${test.name}:</strong> ${test.description}</span>
-        <span class="result running">QUEUED</span>
+        <div class="result-group">
+          <span class="result native running">NATIVE: QUEUED</span>
+          <span class="result hls-js running">HLS.JS: QUEUED</span>
+          <span class="result shaka-player running">SHAKA: QUEUED</span>
+        </div>
       </div>
     `;
 
@@ -65,7 +69,7 @@ async function runAllHlsTests() {
   const failedEl = document.getElementById('failed-count');
   const runningEl = document.getElementById('running-count');
 
-  let total = testElements.length;
+  let total = testElements.length * 3;
   let passed = 0;
   let failed = 0;
   let running = 0;
@@ -80,16 +84,15 @@ async function runAllHlsTests() {
     }
   });
 
-  const runTest = async (el) => {
+  const runTest = async (el, player) => {
     running++;
     runningEl.textContent = running;
 
-    const resultEl = el.summary.querySelector('.result');
-    resultEl.textContent = 'RUNNING';
-    resultEl.className = 'result running';
+    const resultEl = el.summary.querySelector(`.result.${player.replace('.','')}`);
+    resultEl.textContent = `${player.toUpperCase()}: RUNNING`;
+    resultEl.className = `result ${player.replace('.','')} running`;
 
-    const player = document.querySelector('#player-engine-group .btn.active').dataset.player;
-    const testId = `test-${el.index}-${Date.now()}`;
+    const testId = `test-${el.index}-${player}-${Date.now()}`;
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     iframe.src = `test_runner.html?testIndex=${el.index}&testId=${testId}&player=${player}`;
@@ -125,8 +128,8 @@ async function runAllHlsTests() {
         statusText = 'FAIL (Unexpected Pass)';
     }
 
-    resultEl.textContent = statusText;
-    resultEl.className = `result ${result.status.toLowerCase()}`;
+    resultEl.textContent = `${player.toUpperCase()}: ${statusText}`;
+    resultEl.className = `result ${player.replace('.','')} ${result.status.toLowerCase()}`;
 
     const manifestUrls = [...new Set(result.networkRequests.filter(url => url.endsWith('.m3u8')))];
     const manifestContents = await Promise.all(manifestUrls.map(async (url) => {
@@ -169,13 +172,19 @@ async function runAllHlsTests() {
 
   // Run up to 5 tests in parallel
   const limit = 5;
-  const queue = [...testElements];
+  const queue = [];
+  for (const el of testElements) {
+    queue.push({el, player: 'native'});
+    queue.push({el, player: 'hls.js'});
+    queue.push({el, player: 'shaka-player'});
+  }
+
   const active = [];
 
   const next = () => {
     while (active.length < limit && queue.length > 0) {
-      const el = queue.shift();
-      const promise = runTest(el).then(() => {
+      const {el, player} = queue.shift();
+      const promise = runTest(el, player).then(() => {
         active.splice(active.indexOf(promise), 1);
         next();
       });
@@ -207,20 +216,6 @@ async function main() {
     e.target.classList.add('active');
     const newPane = reportBody.querySelector(`[data-pane="${tab}"]`);
     if (newPane) newPane.classList.add('active');
-  });
-
-  document.getElementById('player-engine-group').addEventListener('click', (event) => {
-    if (event.target.tagName !== 'BUTTON') {
-      return;
-    }
-
-    // Remove active class from all buttons
-    const buttons = document.querySelectorAll('#player-engine-group .btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-
-    // Add active class to the clicked button
-    event.target.classList.add('active');
-    runAllHlsTests();
   });
 
   if ('serviceWorker' in navigator) {
