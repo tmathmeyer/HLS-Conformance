@@ -79,15 +79,17 @@ async function runSingleHlsTest(test, testId, player) {
 
     if (player === 'hls.js') {
       if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(test.manifest);
-        hls.attachMedia(video);
+        const hls = new Hls({
+          debug: true,
+        });
         hls.on(Hls.Events.ERROR, function (event, data) {
+          logs.push(`HLS.js log: ${data.type} - ${data.details}`);
           if (data.fatal) {
-            logs.push(`HLS.js Error: ${data.type} - ${data.details}`);
             finishTest({ status: 'FAIL', reason: 'HLS.js fatal error' });
           }
         });
+        hls.loadSource(test.manifest);
+        hls.attachMedia(video);
       } else {
         logs.push('HLS.js is not supported');
         finishTest({ status: 'FAIL', reason: 'HLS.js not supported' });

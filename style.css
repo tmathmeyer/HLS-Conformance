@@ -198,6 +198,28 @@ summary::before {
   padding-bottom: 5px;
 }
 
+.player-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+.player-result-header h4 {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.open-in-new-tab-btn {
+  padding: 3px 8px;
+  font-size: 0.8em;
+  cursor: pointer;
+}
+
+
 
 .report-body h4 {
   margin-top: 0;

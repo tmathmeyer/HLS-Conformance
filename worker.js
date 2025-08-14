@@ -28,41 +28,20 @@ self.addEventListener('fetch', (event) => {
     });
   });
 
-  const url = new URL(event.request.url);
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        return response;
+      }
 
-  if (url.pathname.endsWith('.m3u8')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          if (!response.ok) {
-            return response;
-          }
-
-          return response.text().then((text) => {
-            //const modifiedManifest = `#EXT-X-COMMENT: This manifest was modified by the service worker!\n${text}`;
-            const newHeaders = new Headers(response.headers);
-            newHeaders.set('Content-Type', 'application/vnd.apple.mpegurl');
-
-            return new Response(text, {
-              status: response.status,
-              statusText: response.statusText,
-              headers: newHeaders,
-            });
-          });
-        })
-        .catch((error) => {
-          console.error('Worker failed to fetch and modify manifest:', error);
-          throw error;
-        })
-    );
-  } else {
-    event.respondWith(
-      fetch(event.request)
-        .catch((error) => {
-          console.error('Worker failed to fetch:', error);
-          throw error;
-        })
-    );
-  }
+      return fetch(event.request).then((response) => {
+        const responseToCache = response.clone();
+        caches.open('hls-conformance-cache').then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
+        return response;
+      });
+    })
+  );
 });
 

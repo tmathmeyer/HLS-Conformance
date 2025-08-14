@@ -101,3 +101,31 @@
     * The SAMPLE-AES content is still missing (unable to generate with ffmpeg)
     * Figure out how to generate some encrypted content for other key systems, like widevine. (unable to generate without a key server)
     * There are some good ideas for example tests on the apple site here: https://developer.apple.com/streaming/examples/. Use this to make 10 new tests that are unlike the other tests you've made, or if you can't make 10, tell me why.
+
+20. **The Challenge**
+    * Make each of the tests run in parallel. I suspect you might be able to do this with iframes so that each of the individual tests can't see eachother's network requests.
+
+21. **HLS.js**
+    * We now need to implement the "comparison" element of this project
+    * You should download the latest version of hls.js to the vendor/ directory
+    * When clicking on the "hls.js" button at the top of the page, it should run all the tests, but use HLS.js to load the manifests and create the player.
+
+22. **Shaka Player**
+    * You should download the latest version of shakaplayer into the vendor/ directory.
+    * Similar to the HLS.js task, implement the shaka player version of all the tests, which
+    will run when the user clicks the shaka player button at the top.
+
+23. **Test runner improvement**
+    * Instead of a toggle at the top of the page, each of the tests should automatically run under the native/hls.js/shaka implementations, and should have three pass/fail badges in associated columns.
+
+24. **Features!**
+    * The test results should have a button next to the pass/fail marker which will open just a runner for that test in a new tab. Since tests are run in an iframe, this should be easy.
+    * Use the worker.js to cache the results of every network request. Right now there are a lot of requests hitting the webserver!
+    * Capture logs from shaka player and hls.js and include them in the associated logs place.
+    * Run more than 5 tests at once. Maybe 20 is appropriate.
+    * Come up with 3 new features that you think I might want, and I'll let you know if they are good enough. If they are, add them to this task, and implement them.
+
+25. **More Features!**
+    * **Timeline View:** Create a visual timeline that shows the sequence of network requests, player events, and logs for each test. This would help visualize the playback process and identify timing-related problems.
+    * **Custom Test Manifests:** Allow users to paste in their own manifest URL or upload a manifest file to run the conformance tests against. This would make the tool more flexible for testing custom content.
+    * **Test Filtering:** Add a search box above the test results that allows the user to filter which tests are run. For example, typing "encryption" would only run tests with "encryption" in their name or description. This will make it easier to focus on specific areas of HLS support.

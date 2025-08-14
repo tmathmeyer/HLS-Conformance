@@ -149,7 +149,10 @@ async function runAllHlsTests() {
     }));
 
     playerResultContainer.innerHTML = `
-      <h4>${player.toUpperCase()}</h4>
+      <div class="player-result-header">
+        <h4>${player.toUpperCase()}</h4>
+        <button class="open-in-new-tab-btn" data-player="${player}" data-test-index="${el.index}">Open in New Tab</button>
+      </div>
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="network">Network</button>
         <button class="tab-btn" data-tab="manifests">Manifests</button>
@@ -174,11 +177,11 @@ async function runAllHlsTests() {
           <img src="${result.screenshot}" style="max-width: 100%; height: auto; border: 1px solid #ccc;">
         </div>` : ''}
       </div>
-    `;
+    `
   };
 
-  // Run up to 5 tests in parallel
-  const limit = 5;
+  // Run up to 20 tests in parallel
+  const limit = 20;
   const queue = [];
   for (const el of testElements) {
     queue.push({el, player: 'native'});
@@ -223,6 +226,14 @@ async function main() {
     e.target.classList.add('active');
     const newPane = playerResultContainer.querySelector(`[data-pane="${tab}"]`);
     if (newPane) newPane.classList.add('active');
+  });
+
+  document.getElementById('hls-reports-container').addEventListener('click', (e) => {
+    if (!e.target.matches('.open-in-new-tab-btn')) return;
+
+    const player = e.target.dataset.player;
+    const testIndex = e.target.dataset.testIndex;
+    window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
   });
 
   if ('serviceWorker' in navigator) {
