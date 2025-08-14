@@ -254,11 +254,32 @@ async function main() {
       window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
     } else if (e.target.matches('.rerun-btn')) {
       const player = e.target.dataset.player;
-      const testIndex = e.target.dataset.testIndex;
-      const test = hlsConformanceTests[testIndex];
+      const reportBox = e.target.closest('.report-box');
+      const testIndex = reportBox.dataset.testIndex;
+      
+      let test;
+      if (testIndex === '-1') {
+        test = {
+          name: reportBox.dataset.testName,
+          manifest: reportBox.dataset.testManifest,
+          description: reportBox.dataset.testDescription,
+        };
+      } else {
+        test = hlsConformanceTests[testIndex];
+      }
+
+      const resultEl = reportBox.querySelector(`.result.${player.replace('.', '')}`);
+      if (resultEl.classList.contains('pass')) {
+        passed--;
+        passedEl.textContent = passed;
+      } else if (resultEl.classList.contains('fail')) {
+        failed--;
+        failedEl.textContent = failed;
+      }
+
       const el = {
-        summary: e.target.closest('.report-box').querySelector('summary'),
-        body: e.target.closest('.report-box').querySelector('.report-body'),
+        summary: reportBox.querySelector('summary'),
+        body: reportBox.querySelector('.report-body'),
         test: test,
         index: testIndex,
       };
@@ -294,6 +315,10 @@ async function main() {
     const details = document.createElement('details');
     details.className = 'report-box';
     details.open = true;
+    details.dataset.testIndex = -1;
+    details.dataset.testName = customTest.name;
+    details.dataset.testManifest = customTest.manifest;
+    details.dataset.testDescription = customTest.description;
 
     const summary = document.createElement('summary');
     summary.innerHTML = `
