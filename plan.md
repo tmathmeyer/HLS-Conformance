@@ -125,7 +125,11 @@
     * Run more than 5 tests at once. Maybe 20 is appropriate.
     * Come up with 3 new features that you think I might want, and I'll let you know if they are good enough. If they are, add them to this task, and implement them.
 
-25. **More Features!**
-    * **Timeline View:** Create a visual timeline that shows the sequence of network requests, player events, and logs for each test. This would help visualize the playback process and identify timing-related problems.
-    * **Custom Test Manifests:** Allow users to paste in their own manifest URL or upload a manifest file to run the conformance tests against. This would make the tool more flexible for testing custom content.
-    * **Test Filtering:** Add a search box above the test results that allows the user to filter which tests are run. For example, typing "encryption" would only run tests with "encryption" in their name or description. This will make it easier to focus on specific areas of HLS support.
+25. **Timeline View**
+    * Create a visual timeline that shows the sequence of network requests, player events, and logs for each test. This would help visualize the playback process and identify timing-related problems.
+
+26. **Custom Test Manifests**
+    * Allow users to paste in their own manifest URL or upload a manifest file to run the conformance tests against. This would make the tool more flexible for testing custom content.
+
+27. **Test Filtering**
+    * Add a search box above the test results that allows the user to filter which tests are run. For example, typing "encryption" would only run tests with "encryption" in their name or description. This will make it easier to focus on specific areas of HLS support.
