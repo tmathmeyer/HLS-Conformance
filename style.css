@@ -23,17 +23,18 @@ body {
   font-family: var(--font-family);
   background-color: var(--background-color);
   color: var(--text-color);
-  line-height: 1.6;
+  line-height: 1.5;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-size: 14px;
 }
 
 header,
 footer {
   background-color: var(--header-bg);
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.25rem 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
@@ -44,23 +45,23 @@ footer {
 }
 
 .header-content h1 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   margin: 0;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .test-counts {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .test-counts span {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #606770;
 }
 
@@ -76,11 +77,12 @@ footer {
 .btn-group .btn {
   background-color: #e4e6eb;
   border: 1px solid #ccd0d5;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.75rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #4b4f56;
   transition: background-color 0.2s, border-color 0.2s;
+  border-radius: 0;
 }
 
 .btn-group .btn:hover {
@@ -89,16 +91,6 @@ footer {
 
 .btn-group .btn:not(:last-child) {
   border-right: none;
-}
-
-.btn-group .btn:first-child {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-}
-
-.btn-group .btn:last-child {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
 }
 
 .btn-group .btn.active {
@@ -112,14 +104,14 @@ footer {
 
 main {
   flex-grow: 1;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .report-box {
   background-color: var(--header-bg);
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
+  border-radius: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
   border: 1px solid #ddd;
 }
 
@@ -128,9 +120,9 @@ main {
 }
 
 summary {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   list-style: none; /* Remove default arrow */
 }
@@ -142,7 +134,7 @@ summary::-webkit-details-marker {
 summary::before {
   content: '▶';
   margin-right: 0.4rem;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   display: inline-block;
   transition: transform 0.15s;
 }
@@ -152,47 +144,51 @@ summary::before {
 }
 
 .custom-test-container {
-  padding: 15px;
-  margin-bottom: 20px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .custom-test-container h3 {
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 1rem;
 }
 
 .custom-test-input-group {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .custom-test-input-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
 }
 
 .custom-test-input-group input {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   box-sizing: border-box;
 }
 
-#run-custom-test-btn {
-  margin-top: 10px;
+#run-custom-test-btn, #run-all-tests-btn {
+  margin-top: 8px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
 }
 
 .filter-container {
-  padding: 15px;
-  margin-bottom: 20px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .filter-container label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .filter-container input {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   box-sizing: border-box;
 }
 
@@ -205,14 +201,14 @@ summary::before {
 
 .result-group {
   display: flex;
-  gap: 10px;
+  gap: 5px;
 }
 
 .result {
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 3px 6px;
+  border-radius: 0;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .result.pass { background-color: #28a745; }
@@ -223,24 +219,24 @@ summary::before {
 }
 
 .report-body {
-  padding: 15px;
+  padding: 10px;
   border-top: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .player-results {
   border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 0;
+  padding: 8px;
 }
 
 .player-results h4 {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
+  padding-bottom: 4px;
 }
 
 .player-result-header {
@@ -248,8 +244,8 @@ summary::before {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .player-result-header h4 {
@@ -260,12 +256,12 @@ summary::before {
 
 .player-result-header div {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .open-in-new-tab-btn, .rerun-btn {
-  padding: 3px 8px;
-  font-size: 0.8em;
+  padding: 2px 6px;
+  font-size: 0.75em;
   cursor: pointer;
 }
 
@@ -273,15 +269,16 @@ summary::before {
 
 .report-body h4 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .report-body pre {
   background-color: #f8f9fa;
   border: 1px solid #eee;
-  padding: 0.5rem;
+  padding: 0.25rem;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-size: 0.8rem;
 }
 
 .report-body canvas {
@@ -296,12 +293,12 @@ summary::before {
 }
 
 .tab-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   cursor: pointer;
   border: none;
   background-color: transparent;
   border-bottom: 2px solid transparent;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .tab-btn.active {
@@ -312,7 +309,7 @@ summary::before {
 
 .tab-pane {
   display: none;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
 }
 
 .tab-pane.active {
