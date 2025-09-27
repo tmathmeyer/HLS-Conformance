@@ -367,6 +367,19 @@ async function main() {
     runTest(el, 'shaka-player');
   });
 
+document.getElementById('run-all-tests-btn').addEventListener('click', () => {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      console.log('Service worker is active and controlling the page.');
+      runAllHlsTests();
+    } else if ('serviceWorker' in navigator) {
+      console.error('Service worker is not yet in control. Cannot run tests.');
+      alert('Service worker is not ready. Please reload the page and try again.');
+    } else {
+      console.error('Service workers not supported. Cannot run tests.');
+      runAllHlsTests(); // Fallback for browsers without service workers
+    }
+  });
+
   if ('serviceWorker' in navigator) {
     try {
       await navigator.serviceWorker.register('/worker.js');
@@ -379,18 +392,9 @@ async function main() {
         window.location.reload();
         return; // Abort script execution to allow the page to reload
       }
-      
-      console.log('Service worker is active and controlling the page.');
-      runAllHlsTests();
-
     } catch (error) {
       console.error('Service worker setup failed:', error);
-      // Run tests anyway, but worker features won't work.
-      runAllHlsTests();
     }
-  } else {
-    // Service workers not supported.
-    runAllHlsTests();
   }
 }
 
