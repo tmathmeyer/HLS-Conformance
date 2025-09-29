@@ -38,6 +38,10 @@ footer {
   z-index: 1;
 }
 
+.hidden {
+  display: none;
+}
+
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -157,7 +161,7 @@ summary {
 }
 
 .hls-report-header .hls-report-summary {
-  padding: 0.25rem 0.5rem;
+  padding: 0 1rem;
 }
 
 .test-name-header {
