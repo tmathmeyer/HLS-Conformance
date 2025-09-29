@@ -182,7 +182,23 @@ summary {
 #run-all-tests-btn {
   padding: 4px 8px;
   font-size: 0.9rem;
-  margin-left: -0.5rem; /* Counteract the parent's padding */
+}
+
+.run-column-header {
+  width: 80px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.run-column {
+  width: 80px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.run-single-test-btn {
+  padding: 2px 8px;
+  font-size: 0.8rem;
 }
 
 .hls-report-summary {

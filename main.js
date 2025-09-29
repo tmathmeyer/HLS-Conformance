@@ -152,9 +152,6 @@ async function runAllHlsTests() {
   }).filter(Boolean); // Filter out any nulls
 
   const totalEl = document.getElementById('total-count');
-  passedEl = document.getElementById('passed-count');
-  failedEl = document.getElementById('failed-count');
-  runningEl = document.getElementById('running-count');
 
   let total = testElements.length * 3;
   passed = 0;
@@ -165,16 +162,6 @@ async function runAllHlsTests() {
   passedEl.textContent = passed;
   failedEl.textContent = failed;
   runningEl.textContent = running;
-
-
-  window.addEventListener('message', (event) => {
-    if (event.data.type === 'test_result') {
-      const { testId, result, testIndex } = event.data;
-      results[testId] = { result, testIndex };
-    }
-  });
-
-
 
   // Run up to 10 tests in parallel
   const limit = 10;
@@ -227,6 +214,9 @@ function renderHlsTests() {
     summary.innerHTML = `
       <div class="hls-report-summary">
         <span><strong>${test.name}:</strong> ${test.description}</span>
+        <div class="run-column">
+          <button class="btn run-single-test-btn" data-test-index="${index}">Run</button>
+        </div>
         <div class="result-group">
           <span class="result native not-run">NOT RUN</span>
           <span class="result hlsjs not-run">NOT RUN</span>
@@ -254,7 +244,18 @@ async function main() {
   renderVideoGrid();
   renderHlsTests();
 
+  passedEl = document.getElementById('passed-count');
+  failedEl = document.getElementById('failed-count');
+  runningEl = document.getElementById('running-count');
+
   document.getElementById('test-filter').addEventListener('input', filterTests);
+
+  window.addEventListener('message', (event) => {
+    if (event.data.type === 'test_result') {
+      const { testId, result, testIndex } = event.data;
+      results[testId] = { result, testIndex };
+    }
+  });
   
   document.getElementById('hls-reports-container').addEventListener('click', (e) => {
     if (e.target.matches('.tab-btn')) {
@@ -276,6 +277,23 @@ async function main() {
       const player = e.target.dataset.player;
       const testIndex = e.target.dataset.testIndex;
       window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
+    } else if (e.target.matches('.run-single-test-btn')) {
+      const reportBox = e.target.closest('.report-box');
+      const testIndex = parseInt(reportBox.dataset.testIndex, 10);
+      if (isNaN(testIndex)) return;
+
+      const test = hlsConformanceTests[testIndex];
+      if (!test) return;
+
+      const el = {
+        summary: reportBox.querySelector('summary'),
+        body: reportBox.querySelector('.report-body'),
+        test: test,
+        index: testIndex,
+      };
+      runTest(el, 'native');
+      runTest(el, 'hls.js');
+      runTest(el, 'shaka-player');
     } else if (e.target.matches('.rerun-btn')) {
       const player = e.target.dataset.player;
       const reportBox = e.target.closest('.report-box');
