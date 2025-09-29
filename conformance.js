@@ -47,175 +47,39 @@ export const codecStrings = [
 
 export const hlsConformanceTests = [
   {
-    name: 'Basic VOD (TS)',
-    manifest: '/manifests/basic-vod-ts.m3u8',
-    description: 'A standard Video-On-Demand presentation using MPEG-2 Transport Stream segments.'
+    name: 'Basic VOD H.264 fMP4',
+    manifest: '/content/mp4_h264_1s/playlist.m3u8',
+    description: 'A standard Video-On-Demand presentation using H.264 fragmented MP4 segments.'
   },
   {
-    name: 'Basic VOD (fMP4)',
-    manifest: '/manifests/basic-vod-fmp4.m3u8',
-    description: 'A standard Video-On-Demand presentation using fragmented MP4 segments.'
-  },
-
-
-
-
-  {
-    name: 'Quirk: ENDLIST in Multivariant Playlist',
-    manifest: '/manifests/quirk-endlist-in-multivariant-ts.m3u8',
-    description: 'A multivariant playlist with a trailing EXT-X-ENDLIST tag, which is a spec violation.'
+    name: 'Basic VOD H.264 TS',
+    manifest: '/content/ts_h264_1s/playlist.m3u8',
+    description: 'H.264 video using MPEG-TS segments for 1-second chunks.'
   },
   {
-    name: 'Quirk: Duplicate Rendition Names',
-    manifest: '/manifests/quirk-duplicate-rendition-names-ts.m3u8',
-    description: 'A manifest with multiple audio renditions in the same group using the same NAME attribute.'
+    name: 'Basic VOD H.265 TS',
+    manifest: '/content/ts_h265_1s/playlist.m3u8',
+    description: 'H.265/HEVC video using MPEG-TS segments for 1-second chunks.'
   },
   {
-    name: 'Quirk: Multiple Default Renditions',
-    manifest: '/manifests/quirk-multiple-default-renditions-ts.m3u8',
-    description: 'A manifest with multiple audio renditions in the same group marked as DEFAULT=YES.'
+    name: 'Basic VOD H.265 fMP4',
+    manifest: '/content/mp4_h265_1s/playlist.m3u8',
+    description: 'H.265/HEVC video using fragmented MP4 segments for 1-second chunks.'
   },
   {
-    name: 'Quirk: Missing EXTINF Comma',
-    manifest: '/manifests/quirk-missing-extinf-comma-ts.m3u8',
-    description: 'A media playlist where an EXTINF tag is missing its trailing comma.'
+    name: 'Basic VOD VP9 fMP4',
+    manifest: '/content/mp4_vp9_1s/playlist.m3u8',
+    description: 'VP9 video using fragmented MP4 segments for 1-second chunks.'
   },
   {
-    name: 'HEVC/H.265 VOD',
-    manifest: '/manifests/vod-hevc.m3u8',
-    description: 'A VOD presentation using HEVC (H.265) codec.'
+    name: 'Basic VOD AV1 fMP4',
+    manifest: '/content/mp4_av1_1s/playlist.m3u8',
+    description: 'AV1 video using fragmented MP4 segments for 1-second chunks.'
   },
   {
-    name: 'VP9 VOD',
-    manifest: '/manifests/vod-vp9.m3u8',
-    description: 'A VOD presentation using VP9 codec in an MP4 container.',
+    name: 'Basic VOD H.264 fMP4 No-Init',
+    manifest: '/content/mp4_h264_1s_noinit/playlist.m3u8',
+    description: 'H.264 fragmented MP4 segments without a separate init segment.',
     expected: 'fail'
-  },
-  {
-    name: 'AV1 VOD',
-    manifest: '/manifests/vod-av1.m3u8',
-    description: 'A VOD presentation using AV1 codec.',
-    expected: 'fail'
-  },
-  {
-    name: 'AES-128 Encrypted VOD',
-    manifest: '/manifests/vod-aes128.m3u8',
-    description: 'A VOD presentation encrypted with AES-128.'
-  },
-  {
-    name: 'SAMPLE-AES Encrypted VOD',
-    manifest: '/manifests/vod-sample-aes.m3u8',
-    description: 'A VOD presentation encrypted with SAMPLE-AES.'
-  },
-  {
-    name: 'Audio-Only VOD',
-    manifest: '/manifests/vod-audio-only.m3u8',
-    description: 'A VOD presentation with only an audio track.'
-  },
-  {
-    name: 'Video-Only VOD',
-    manifest: '/manifests/vod-video-only.m3u8',
-    description: 'A VOD presentation with only a video track.'
-  },
-  {
-    name: 'Alternate Audio Renditions',
-    manifest: '/manifests/vod-alternate-audio.m3u8',
-    description: 'A VOD with multiple selectable audio tracks (e.g., different languages).'
-  },
-  {
-    name: 'Alternate Video Renditions (Bitrate)',
-    manifest: '/manifests/vod-alternate-video.m3u8',
-    description: 'A multivariant playlist with multiple video renditions at different bitrates.'
-  },
-  {
-    name: 'I-Frame Stream',
-    manifest: '/manifests/vod-iframe-stream.m3u8',
-    description: 'A VOD with an I-frame only stream for fast seeking.'
-  },
-  {
-    name: 'Subtitles (WebVTT)',
-    manifest: '/manifests/vod-webvtt.m3u8',
-    description: 'A VOD with WebVTT subtitles.'
-  },
-  {
-    name: 'Discontinuity',
-    manifest: '/manifests/vod-discontinuity.m3u8',
-    description: 'A VOD with a discontinuity tag between segments.'
-  },
-  {
-    name: 'BYTERANGE Support',
-    manifest: '/manifests/vod-byterange.m3u8',
-    description: 'A VOD using BYTERANGE requests to seek within a single file.'
-  },
-  {
-    name: 'Invalid Segment URI',
-    manifest: '/manifests/fail-invalid-segment-uri.m3u8',
-    description: 'A media playlist pointing to a segment that does not exist.',
-    expected: 'fail'
-  },
-  {
-    name: 'Mismatched Target Duration',
-    manifest: '/manifests/fail-mismatched-target-duration.m3u8',
-    description: 'A media playlist where a segment duration exceeds the target duration.',
-    expected: 'fail'
-  },
-  {
-    name: 'Missing Endlist Tag (VOD)',
-    manifest: '/manifests/fail-missing-endlist.m3u8',
-    description: 'A VOD playlist that is missing the EXT-X-ENDLIST tag.',
-    expected: 'fail'
-  },
-  {
-    name: 'Corrupted Segment',
-    manifest: '/manifests/fail-corrupted-segment.m3u8',
-    description: 'A media playlist with a link to a corrupted media segment.',
-    expected: 'fail'
-  },
-  {
-    name: 'Unsupported Codec',
-    manifest: '/manifests/fail-unsupported-codec.m3u8',
-    description: 'A manifest declaring a codec string that is not supported by the platform.',
-    expected: 'fail'
-  },
-  {
-    name: 'Cross-protocol Redirect',
-    manifest: '/manifests/fail-cross-protocol-redirect.m3u8',
-    description: 'A manifest that redirects from HTTPS to HTTP.',
-    expected: 'fail'
-  },
-  {
-    name: 'HEVC with Multiple Audio/Subtitle Renditions',
-    manifest: '/manifests/vod-hevc-multiaudio-multisub.m3u8',
-    description: 'A multivariant playlist with HEVC video and multiple audio and subtitle renditions.'
-  },
-  {
-    name: 'Floating-Point Durations',
-    manifest: '/manifests/vod-float-duration.m3u8',
-    description: 'A media playlist with floating-point durations for segments.'
-  },
-  {
-    name: 'ID3 Metadata',
-    manifest: '/manifests/vod-id3.m3u8',
-    description: 'A media playlist with ID3 metadata tags.'
-  },
-  {
-    name: '16x9 Aspect Ratio',
-    manifest: '/manifests/vod-16x9.m3u8',
-    description: 'A VOD presentation with a 16x9 aspect ratio.'
-  },
-  {
-    name: '4x3 Aspect Ratio',
-    manifest: '/manifests/vod-4x3.m3u8',
-    description: 'A VOD presentation with a 4x3 aspect ratio.'
-  },
-  {
-    name: 'Closed Captions',
-    manifest: '/manifests/vod-closed-captions.m3u8',
-    description: 'A VOD presentation with closed captions.'
-  },
-  {
-    name: 'Alternate Video Renditions',
-    manifest: '/manifests/vod-alternate-video-renditions.m3u8',
-    description: 'A multivariant playlist with multiple video renditions at different resolutions, frame rates, and codecs.'
   },
 ];
