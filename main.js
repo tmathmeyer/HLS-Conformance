@@ -45,7 +45,7 @@ async function runTest(el, player) {
   runningEl.textContent = running;
 
   const resultEl = el.summary.querySelector(`.result.${player.replace('.', '')}`);
-  resultEl.textContent = `${player.toUpperCase()}: RUNNING`;
+  resultEl.textContent = `RUNNING`;
   resultEl.className = `result ${player.replace('.', '')} running`;
 
   const testId = `test-${el.index}-${player}-${Date.now()}`;
@@ -84,7 +84,7 @@ async function runTest(el, player) {
       statusText = 'FAIL (Unexpected Pass)';
   }
 
-  resultEl.textContent = `${player.toUpperCase()}: ${statusText}`;
+  resultEl.textContent = statusText;
   resultEl.className = `result ${player.replace('.', '')} ${result.status.toLowerCase()}`;
 
   const playerResultContainer = el.body.querySelector(`.player-results[data-player="${player}"]`);
@@ -140,38 +140,16 @@ async function runTest(el, player) {
 };
 
 async function runAllHlsTests() {
-  const container = document.getElementById('hls-reports-container');
-  container.innerHTML = '';
-  const testElements = hlsConformanceTests.map((test, index) => {
-    const details = document.createElement('details');
-    details.className = 'report-box';
+  const reports = document.querySelectorAll('#hls-reports-container .report-box');
+  const testElements = Array.from(reports).map(details => {
+    const index = parseInt(details.dataset.testIndex, 10);
+    if (isNaN(index) || index < 0) return null; // Skip custom tests or invalid ones
 
-    const summary = document.createElement('summary');
-    summary.innerHTML = `
-      <div class="hls-report-summary">
-        <span><strong>${test.name}:</strong> ${test.description}</span>
-        <div class="result-group">
-          <span class="result native running">NATIVE: QUEUED</span>
-          <span class="result hlsjs running">HLS.JS: QUEUED</span>
-          <span class="result shaka-player running">SHAKA: QUEUED</span>
-        </div>
-      </div>
-    `;
-
-    const body = document.createElement('div');
-    body.className = 'report-body';
-    body.innerHTML = `
-      <div class="player-results" data-player="native"><h4>Native</h4><p>Waiting to run...</p></div>
-      <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Waiting to run...</p></div>
-      <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Waiting to run...</p></div>
-    `;
-
-    details.appendChild(summary);
-    details.appendChild(body);
-    container.appendChild(details);
-
+    const test = hlsConformanceTests[index];
+    const summary = details.querySelector('summary');
+    const body = details.querySelector('.report-body');
     return { test, details, summary, body, index };
-  });
+  }).filter(Boolean); // Filter out any nulls
 
   const totalEl = document.getElementById('total-count');
   passedEl = document.getElementById('passed-count');
@@ -237,9 +215,44 @@ function filterTests() {
   });
 }
 
+function renderHlsTests() {
+  const container = document.getElementById('hls-reports-container');
+  container.innerHTML = '';
+  hlsConformanceTests.forEach((test, index) => {
+    const details = document.createElement('details');
+    details.className = 'report-box';
+    details.dataset.testIndex = index;
+
+    const summary = document.createElement('summary');
+    summary.innerHTML = `
+      <div class="hls-report-summary">
+        <span><strong>${test.name}:</strong> ${test.description}</span>
+        <div class="result-group">
+          <span class="result native not-run">NOT RUN</span>
+          <span class="result hlsjs not-run">NOT RUN</span>
+          <span class="result shaka-player not-run">NOT RUN</span>
+        </div>
+      </div>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'report-body';
+    body.innerHTML = `
+      <div class="player-results" data-player="native"><h4>Native</h4><p>Not yet run.</p></div>
+      <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Not yet run.</p></div>
+      <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Not yet run.</p></div>
+    `;
+
+    details.appendChild(summary);
+    details.appendChild(body);
+    container.appendChild(details);
+  });
+}
+
 async function main() {
   renderMseGrid();
   renderVideoGrid();
+  renderHlsTests();
 
   document.getElementById('test-filter').addEventListener('input', filterTests);
   
@@ -336,9 +349,9 @@ async function main() {
       <div class="hls-report-summary">
         <span><strong>${customTest.name}:</strong> ${customTest.description}</span>
         <div class="result-group">
-          <span class="result native running">NATIVE: QUEUED</span>
-          <span class="result hlsjs running">HLS.JS: QUEUED</span>
-          <span class="result shaka-player running">SHAKA: QUEUED</span>
+          <span class="result native running">QUEUED</span>
+          <span class="result hlsjs running">QUEUED</span>
+          <span class="result shaka-player running">QUEUED</span>
         </div>
       </div>
     `;

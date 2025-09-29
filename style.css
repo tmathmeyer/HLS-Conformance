@@ -125,7 +125,45 @@ summary {
   font-size: 0.9rem;
   cursor: pointer;
   list-style: none; /* Remove default arrow */
+  display: flex;
+  align-items: center;
 }
+
+.hls-report-summary > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  flex-grow: 1;
+  padding-right: 10px;
+}
+
+.result-group {
+  display: flex;
+  gap: 5px;
+  width: 270px; /* Fixed width for the group of results */
+  flex-shrink: 0;
+}
+
+.result, .result-header {
+  flex: 1;
+  text-align: center;
+  padding: 3px 6px;
+}
+
+.hls-report-header {
+  font-weight: bold;
+  background-color: #e4e6eb;
+}
+
+.hls-report-header .hls-report-summary {
+  padding: 0.25rem 0.5rem;
+}
+
+.test-name-header {
+  padding-left: 1.1rem; /* Align with test names by accounting for summary triangle */
+}
+
 
 summary::-webkit-details-marker {
   display: none; /* Remove default arrow for Chrome/Safari */
@@ -216,6 +254,10 @@ summary::before {
 .result.running {
   background-color: #ffc107;
   color: #333;
+}
+.result.not-run {
+  background-color: #6c757d;
+  color: white;
 }
 
 .report-body {
