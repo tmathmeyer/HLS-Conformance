@@ -153,7 +153,7 @@ summary {
 
 .hls-report-header {
   font-weight: bold;
-  background-color: #e4e6eb;
+  background-color: #d1d5db;
 }
 
 .hls-report-header .hls-report-summary {
@@ -161,73 +161,24 @@ summary {
 }
 
 .test-name-header {
-  padding-left: 1.1rem; /* Align with test names by accounting for summary triangle */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-grow: 1;
 }
 
-
-summary::-webkit-details-marker {
-  display: none; /* Remove default arrow for Chrome/Safari */
-}
-
-summary::before {
-  content: '▶';
-  margin-right: 0.4rem;
-  font-size: 0.7rem;
-  display: inline-block;
-  transition: transform 0.15s;
-}
-
-.report-box[open] summary::before {
-  transform: rotate(90deg);
-}
-
-.custom-test-container {
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.custom-test-container h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1rem;
-}
-
-.custom-test-input-group {
-  margin-bottom: 8px;
-}
-
-.custom-test-input-group label {
-  display: block;
-  margin-bottom: 4px;
+#test-filter {
+  width: 200px;
+  padding: 4px 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
   font-size: 0.9rem;
 }
 
-.custom-test-input-group input {
-  width: 100%;
-  padding: 6px;
-  box-sizing: border-box;
-}
-
-#run-custom-test-btn, #run-all-tests-btn {
-  margin-top: 8px;
-  padding: 6px 10px;
+#run-all-tests-btn {
+  padding: 4px 8px;
   font-size: 0.9rem;
-}
-
-.filter-container {
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.filter-container label {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.filter-container input {
-  width: 100%;
-  padding: 6px;
-  box-sizing: border-box;
+  margin-left: -0.5rem; /* Counteract the parent's padding */
 }
 
 .hls-report-summary {

@@ -32,7 +32,6 @@
         <input type="file" id="manifest-file" accept=".m3u8">
       </div>
       <button id="run-custom-test-btn" class="btn">Run Custom Test</button>
-      <button id="run-all-tests-btn" class="btn">Run All Tests</button>
     </div>
     <details class="report-box">
       <summary>MediaSource.isTypeSupported()</summary>
@@ -42,13 +41,13 @@
       <summary>video.canPlayType()</summary>
       <grid-renderer id="video-grid" title="video.canPlayType()"></grid-renderer>
     </details>
-    <div class="report-box filter-container">
-      <label for="test-filter">Filter tests:</label>
-      <input type="search" id="test-filter" placeholder="e.g., encryption, quirk, etc.">
-    </div>
     <div class="report-box hls-report-header">
       <div class="hls-report-summary">
-        <span class="test-name-header">Test Name</span>
+        <div class="test-name-header">
+          <button id="run-all-tests-btn" class="btn">Run All</button>
+          <span>Test Name</span>
+          <input type="search" id="test-filter" placeholder="Filter...">
+        </div>
         <div class="result-group">
           <span class="result-header">Native</span>
           <span class="result-header">HLS.js</span>
