@@ -48,37 +48,37 @@ export const codecStrings = [
 export const hlsConformanceTests = [
   {
     name: 'Basic VOD H.264 fMP4',
-    manifest: '/content/mp4_h264_1s/playlist.m3u8',
+    manifest: '/content/mp4_h264_480p_1s/playlist.m3u8',
     description: 'A standard Video-On-Demand presentation using H.264 fragmented MP4 segments.'
   },
   {
     name: 'Basic VOD H.264 TS',
-    manifest: '/content/ts_h264_1s/playlist.m3u8',
+    manifest: '/content/ts_h264_480p_1s/playlist.m3u8',
     description: 'H.264 video using MPEG-TS segments for 1-second chunks.'
   },
   {
     name: 'Basic VOD H.265 TS',
-    manifest: '/content/ts_h265_1s/playlist.m3u8',
+    manifest: '/content/ts_h265_480p_1s/playlist.m3u8',
     description: 'H.265/HEVC video using MPEG-TS segments for 1-second chunks.'
   },
   {
     name: 'Basic VOD H.265 fMP4',
-    manifest: '/content/mp4_h265_1s/playlist.m3u8',
+    manifest: '/content/mp4_h265_480p_1s/playlist.m3u8',
     description: 'H.265/HEVC video using fragmented MP4 segments for 1-second chunks.'
   },
   {
     name: 'Basic VOD VP9 fMP4',
-    manifest: '/content/mp4_vp9_1s/playlist.m3u8',
+    manifest: '/content/mp4_vp9_480p_1s/playlist.m3u8',
     description: 'VP9 video using fragmented MP4 segments for 1-second chunks.'
   },
   {
     name: 'Basic VOD AV1 fMP4',
-    manifest: '/content/mp4_av1_1s/playlist.m3u8',
+    manifest: '/content/mp4_av1_480p_1s/playlist.m3u8',
     description: 'AV1 video using fragmented MP4 segments for 1-second chunks.'
   },
   {
     name: 'Basic VOD H.264 fMP4 No-Init',
-    manifest: '/content/mp4_h264_1s_noinit/playlist.m3u8',
+    manifest: '/content/mp4_h264_480p_1s_noinit/playlist.m3u8',
     description: 'H.264 fragmented MP4 segments without a separate init segment.',
     expected: 'fail'
   },
