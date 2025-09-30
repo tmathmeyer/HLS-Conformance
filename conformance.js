@@ -82,4 +82,14 @@ export const hlsConformanceTests = [
     description: 'H.264 fragmented MP4 segments without a separate init segment.',
     expected: 'fail'
   },
+  {
+    name: 'Multivariant fMP4 H.264',
+    manifest: '/manifests/mp4_h264_multiresolution/playlist.m3u8',
+    description: 'A multivariant playlist with 480p and 720p fMP4 H.264 streams.'
+  },
+  {
+    name: 'Multivariant TS H.264',
+    manifest: '/manifests/ts_h264_multiresolution/playlist.m3u8',
+    description: 'A multivariant playlist with 480p and 720p TS H.264 streams.'
+  },
 ];
