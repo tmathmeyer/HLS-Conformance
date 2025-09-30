@@ -78,9 +78,7 @@ async function runTest(el, player) {
   runningEl.textContent = running;
 
   let statusText = result.status;
-  if (el.test.expected === 'fail' && result.status === 'PASS') {
-    statusText = 'PASS (Expected Fail)';
-  } else if (el.test.expected === 'fail' && result.status === 'FAIL') {
+  if (el.test.expected === 'fail' && result.status === 'FAIL') {
       statusText = 'FAIL (Unexpected Pass)';
   }
 
