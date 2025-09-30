@@ -122,4 +122,10 @@ export const hlsConformanceTests = [
     manifest: '/content/mp4_h264_480p_1s_byterange/playlist.m3u8',
     description: 'A VOD presentation using byteranges into a single file.'
   },
+  {
+    name: 'Quirk: Invalid CODECS attribute',
+    manifest: '/manifests/quirk_invalid_codecs/playlist.m3u8',
+    description: 'A multivariant playlist with an invalid CODECS attribute.',
+    expected: 'fail'
+  },
 ];

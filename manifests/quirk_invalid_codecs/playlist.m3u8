@@ -1,0 +1,5 @@
+#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=1000000,RESOLUTION=640x480,CODECS="invalid-codec"
+../../content/ts_h264_480p_1s/playlist.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=2500000,RESOLUTION=1280x720,CODECS="invalid-codec"
+../../content/ts_h264_720p_1s/playlist.m3u8
