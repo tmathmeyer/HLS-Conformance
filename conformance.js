@@ -112,4 +112,9 @@ export const hlsConformanceTests = [
     manifest: '/manifests/quirk_multiple_default_renditions/playlist.m3u8',
     description: 'A multivariant playlist with multiple renditions in the same group set to DEFAULT=YES.',
   },
+  {
+    name: 'Encrypted H.264 TS',
+    manifest: '/content/ts_h264_480p_1s_encrypted/playlist.m3u8',
+    description: 'AES-128 encrypted H.264 video using MPEG-TS segments.'
+  },
 ];
