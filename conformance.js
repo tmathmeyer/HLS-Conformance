@@ -117,4 +117,9 @@ export const hlsConformanceTests = [
     manifest: '/content/ts_h264_480p_1s_encrypted/playlist.m3u8',
     description: 'AES-128 encrypted H.264 video using MPEG-TS segments.'
   },
+  {
+    name: 'fMP4 H.264 Byterange',
+    manifest: '/content/mp4_h264_480p_1s_byterange/playlist.m3u8',
+    description: 'A VOD presentation using byteranges into a single file.'
+  },
 ];

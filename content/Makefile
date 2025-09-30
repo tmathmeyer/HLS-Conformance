@@ -5,7 +5,7 @@ SRC_720P=src_720p.mp4
 
 GENERATED=ts_h264_480p_1s mp4_h264_480p_1s mp4_h264_480p_1s_noinit ts_h265_480p_1s \
           mp4_h265_480p_1s mp4_vp9_480p_1s mp4_av1_480p_1s ts_h264_720p_1s mp4_h264_720p_1s \
-		  quirk_extinfcomma ts_h264_480p_1s_encrypted
+		  quirk_extinfcomma ts_h264_480p_1s_encrypted mp4_h264_480p_1s_byterange
 
 all: $(GENERATED)
 	@echo "Built all non-phony targets: $(GENERATED)"
@@ -95,3 +95,10 @@ ts_h264_480p_1s_encrypted: $(SRC)
 	-hls_list_size 0 -hls_segment_filename "$@/out_%03d.ts" \
 	-hls_key_info_file $@/key_info.txt $@/playlist.m3u8 && \
 	sed -i 's/$@\///g' $@/playlist.m3u8
+
+mp4_h264_480p_1s_byterange: $(SRC)
+	mkdir -p $@ && \
+	ffmpeg -i $(SRC) -c:v copy -c:a copy -f hls \
+	-hls_time 1 -hls_list_size 0 -hls_segment_type fmp4 \
+	-hls_flags single_file \
+	-hls_segment_filename "$@/data.mp4" $@/playlist.m3u8
