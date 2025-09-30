@@ -92,4 +92,24 @@ export const hlsConformanceTests = [
     manifest: '/manifests/ts_h264_multiresolution/playlist.m3u8',
     description: 'A multivariant playlist with 480p and 720p TS H.264 streams.'
   },
+  {
+    name: 'Quirk: No comma on EXTINF',
+    manifest: '/content/quirk_extinfcomma/playlist.m3u8',
+    description: 'A playlist where #EXTINF lines do not have a trailing comma, which is a spec violation.',
+  },
+  {
+    name: 'Quirk: #EXT-X-ENDLIST in multivariant playlist',
+    manifest: '/manifests/quirk_endlist_in_multivariant/playlist.m3u8',
+    description: 'A multivariant playlist with a trailing #EXT-X-ENDLIST tag, which is a spec violation.',
+  },
+  {
+    name: 'Quirk: Duplicate rendition names',
+    manifest: '/manifests/quirk_duplicate_rendition_names/playlist.m3u8',
+    description: 'A multivariant playlist with duplicate NAME attributes in #EXT-X-MEDIA tags.',
+  },
+  {
+    name: 'Quirk: Multiple default renditions',
+    manifest: '/manifests/quirk_multiple_default_renditions/playlist.m3u8',
+    description: 'A multivariant playlist with multiple renditions in the same group set to DEFAULT=YES.',
+  },
 ];

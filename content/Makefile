@@ -4,7 +4,8 @@ SRC_720P=src_720p.mp4
 .PHONY: all clean
 
 GENERATED=ts_h264_480p_1s mp4_h264_480p_1s mp4_h264_480p_1s_noinit ts_h265_480p_1s \
-          mp4_h265_480p_1s mp4_vp9_480p_1s mp4_av1_480p_1s ts_h264_720p_1s mp4_h264_720p_1s
+          mp4_h265_480p_1s mp4_vp9_480p_1s mp4_av1_480p_1s ts_h264_720p_1s mp4_h264_720p_1s \
+		  quirk_extinfcomma
 
 all: $(GENERATED)
 	@echo "Built all non-phony targets: $(GENERATED)"
@@ -77,3 +78,8 @@ mp4_av1_480p_1s: $(SRC)
 	mkdir -p $@ && ffmpeg -i $(SRC) -c:v libaom-av1 -b:v 1M -c:a copy \
 	-f hls -hls_time 1 -hls_list_size 0 -hls_segment_type fmp4 \
 	-hls_segment_filename "$@/seg_%03d.mp4" $@/playlist.m3u8
+
+quirk_extinfcomma: ts_h264_480p_1s
+	mkdir -p $@
+	cp -r ts_h264_480p_1s/* $@/
+	sed -i 's/,$$//' $@/playlist.m3u8
