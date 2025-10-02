@@ -26,7 +26,7 @@ $(SRC):
 	-force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
 
 $(HEVCSRC):
-	ffmpeg -f lavfi -i testsrc=duration=10:size=1920x1080:rate=30 -vf \
+	ffmpeg -f lavfi -i testsrc=duration=10:size=640x480:rate=30 -vf \
 	"drawtext=fontcolor=black:fontsize=80:x=-50:y=200:text='%{pts\:hms}'" \
 	-c:v libx265 -preset fast -g 30 -keyint_min 30 -sc_threshold 0 \
 	-force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
