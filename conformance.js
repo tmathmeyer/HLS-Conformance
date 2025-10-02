@@ -59,7 +59,8 @@ export const hlsConformanceTests = [
   {
     name: 'Basic VOD H.265 TS',
     manifest: '/content/ts_h265_480p_1s/playlist.m3u8',
-    description: 'H.265/HEVC video using MPEG-TS segments for 1-second chunks.'
+    description: 'H.265/HEVC video using MPEG-TS segments for 1-second chunks.',
+    expected: 'fail'
   },
   {
     name: 'Basic VOD H.265 fMP4',
