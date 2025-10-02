@@ -1,4 +1,5 @@
 SRC=src.mp4
+HEVCSRC=src_hevc.mp4
 SRC_720P=src_720p.mp4
 
 .PHONY: all clean
@@ -22,6 +23,12 @@ $(SRC):
 	ffmpeg -f lavfi -i testsrc=duration=10:size=640x480:rate=30 -vf \
 	"drawtext=fontcolor=black:fontsize=80:x=-50:y=200:text='%{pts\:hms}'" \
 	-c:v libx264 -preset fast -g 30 -keyint_min 30 -sc_threshold 0 \
+	-force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
+
+$(HEVCSRC):
+	ffmpeg -f lavfi -i testsrc=duration=10:size=1920x1080:rate=30 -vf \
+	"drawtext=fontcolor=black:fontsize=80:x=-50:y=200:text='%{pts\:hms}'" \
+	-c:v libx265 -preset fast -g 30 -keyint_min 30 -sc_threshold 0 \
 	-force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
 
 $(SRC_720P):
@@ -59,13 +66,13 @@ mp4_h264_480p_1s_noinit: $(SRC) mp4_h264_480p_1s
 	cp mp4_h264_480p_1s/playlist.m3u8 ./$@/ && \
 	sed -i '/^#EXT-X-MAP:/d' $@/playlist.m3u8
 
-ts_h265_480p_1s: $(SRC)
-	mkdir -p $@ && ffmpeg -i $(SRC) -c:v libx265 -preset fast -c:a copy \
+ts_h265_480p_1s: $(HEVCSRC)
+	mkdir -p $@ && ffmpeg -i bear.mp4 -c:v copy -c:a copy \
 	-start_number 0 -f hls -hls_time 1 -hls_list_size 0 \
 	-hls_segment_filename "$@/out_%03d.ts" $@/playlist.m3u8
 
-mp4_h265_480p_1s: $(SRC)
-	mkdir -p $@ && ffmpeg -i $(SRC) -c:v libx265 -preset fast -c:a copy \
+mp4_h265_480p_1s: $(HEVCSRC)
+	mkdir -p $@ && ffmpeg -i bear.mp4 -c:v copy -preset fast -c:a copy \
 	-f hls -hls_time 1 -hls_list_size 0 -hls_segment_type fmp4 \
 	-hls_segment_filename "$@/seg_%03d.mp4" $@/playlist.m3u8
 
