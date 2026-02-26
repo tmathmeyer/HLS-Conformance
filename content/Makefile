@@ -23,7 +23,7 @@ $(SRC):
 	ffmpeg -f lavfi -i testsrc=duration=10:size=640x480:rate=30 -vf \
 	"drawtext=fontcolor=black:fontsize=80:x=-50:y=200:text='%{pts\:hms}'" \
 	-c:v libx264 -preset fast -g 30 -keyint_min 30 -sc_threshold 0 \
-	-force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
+	-pix_fmt yuv420p -force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
 
 $(HEVCSRC):
 	ffmpeg -f lavfi -i testsrc=duration=10:size=640x480:rate=30 -vf \
@@ -35,7 +35,7 @@ $(SRC_720P):
 	ffmpeg -f lavfi -i testsrc=duration=10:size=1280x720:rate=30 -vf \
 	"drawtext=fontcolor=black:fontsize=80:x=-50:y=200:text='%{pts\:hms}'" \
 	-c:v libx264 -preset fast -g 30 -keyint_min 30 -sc_threshold 0 \
-	-force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
+	-pix_fmt yuv420p -force_key_frames "expr:gte(t,n_forced*1)" -t 10 $@
 
 ts_h264_480p_1s: $(SRC)
 	mkdir -p $@
