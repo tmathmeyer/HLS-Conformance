@@ -151,7 +151,7 @@ async function runAllHlsTests() {
 
   const totalEl = document.getElementById('total-count');
 
-  let total = testElements.length * 3;
+  let total = testElements.length * 4;
   passed = 0;
   failed = 0;
   running = 0;
@@ -168,6 +168,7 @@ async function runAllHlsTests() {
     queue.push({el, player: 'native'});
     queue.push({el, player: 'hls.js'});
     queue.push({el, player: 'shaka-player'});
+    queue.push({el, player: 'video.js'});
   }
 
   const active = [];
@@ -219,6 +220,7 @@ function renderHlsTests() {
           <span class="result native not-run">NOT RUN</span>
           <span class="result hlsjs not-run">NOT RUN</span>
           <span class="result shaka-player not-run">NOT RUN</span>
+          <span class="result videojs not-run">NOT RUN</span>
         </div>
       </div>
     `;
@@ -229,6 +231,7 @@ function renderHlsTests() {
       <div class="player-results" data-player="native"><h4>Native</h4><p>Not yet run.</p></div>
       <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Not yet run.</p></div>
       <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Not yet run.</p></div>
+      <div class="player-results" data-player="video.js"><h4>Video.js</h4><p>Not yet run.</p></div>
     `;
 
     details.appendChild(summary);
@@ -292,6 +295,7 @@ async function main() {
       runTest(el, 'native');
       runTest(el, 'hls.js');
       runTest(el, 'shaka-player');
+      runTest(el, 'video.js');
     } else if (e.target.matches('.rerun-btn')) {
       const player = e.target.dataset.player;
       const reportBox = e.target.closest('.report-box');
@@ -368,6 +372,7 @@ async function main() {
           <span class="result native running">QUEUED</span>
           <span class="result hlsjs running">QUEUED</span>
           <span class="result shaka-player running">QUEUED</span>
+          <span class="result videojs running">QUEUED</span>
         </div>
       </div>
     `;
@@ -378,6 +383,7 @@ async function main() {
       <div class="player-results" data-player="native"><h4>Native</h4><p>Waiting to run...</p></div>
       <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Waiting to run...</p></div>
       <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Waiting to run...</p></div>
+      <div class="player-results" data-player="video.js"><h4>Video.js</h4><p>Waiting to run...</p></div>
     `;
 
     details.appendChild(summary);
@@ -394,6 +400,7 @@ async function main() {
     runTest(el, 'native');
     runTest(el, 'hls.js');
     runTest(el, 'shaka-player');
+    runTest(el, 'video.js');
   });
 
 document.getElementById('run-all-tests-btn').addEventListener('click', () => {

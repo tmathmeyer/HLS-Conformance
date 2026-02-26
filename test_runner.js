@@ -155,6 +155,16 @@ async function runSingleHlsTest(test, testId, player) {
         timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
         finishTest({ status: 'FAIL', reason: 'Shaka Player not supported' });
       }
+    } else if (player === 'video.js') {
+      const vjsPlayer = videojs(video);
+      vjsPlayer.on('error', () => {
+        const error = vjsPlayer.error();
+        const message = `Video.js Error: code ${error.code}, message: ${error.message}`;
+        logs.push(message);
+        timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
+        finishTest({ status: 'FAIL', reason: 'Video.js error' });
+      });
+      vjsPlayer.src({ src: test.manifest, type: 'application/x-mpegURL' });
     } else {
       video.src = test.manifest;
     }
