@@ -145,7 +145,7 @@ summary {
 .result-group {
   display: flex;
   gap: 5px;
-  width: 270px; /* Fixed width for the group of results */
+  width: 360px; /* Fixed width for the group of results */
   flex-shrink: 0;
 }
 
