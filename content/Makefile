@@ -6,7 +6,8 @@ SRC_720P=src_720p.mp4
 
 GENERATED=ts_h264_480p_1s mp4_h264_480p_1s mp4_h264_480p_1s_noinit ts_h265_480p_1s \
           mp4_h265_480p_1s mp4_vp9_480p_1s mp4_av1_480p_1s ts_h264_720p_1s mp4_h264_720p_1s \
-		  quirk_extinfcomma ts_h264_480p_1s_encrypted mp4_h264_480p_1s_byterange
+		  quirk_extinfcomma ts_h264_480p_1s_encrypted mp4_h264_480p_1s_byterange \
+		  mp4_mp3_1s
 
 all: $(GENERATED)
 	@echo "Built all non-phony targets: $(GENERATED)"
@@ -52,6 +53,12 @@ ts_h264_720p_1s: $(SRC_720P)
 	mkdir -p $@
 	ffmpeg -i $(SRC_720P) -c copy -start_number 0 -f hls -hls_time 1 \
 	-hls_list_size 0 -hls_segment_filename "$@/out_%03d.ts" $@/playlist.m3u8
+
+ts_mp3_1s:
+	mkdir -p $@ && \
+	ffmpeg -f lavfi -i sine=frequency=440:duration=10 -c:a libmp3lame -f hls \
+	-hls_time 1 -hls_list_size 0 \
+	-hls_segment_filename "$@/seg_%03d.ts" $@/playlist.m3u8
 
 mp4_h264_720p_1s: $(SRC_720P)
 	mkdir -p $@ && \
