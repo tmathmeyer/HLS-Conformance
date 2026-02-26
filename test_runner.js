@@ -139,14 +139,16 @@ async function runSingleHlsTest(test, testId, player) {
             timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
           };
         }
-        const shakaPlayer = new shaka.Player(video);
+        const shakaPlayer = new shaka.Player();
         shakaPlayer.addEventListener('error', (event) => {
           const message = `Shaka Player Error: ${event.detail.code}`;
           logs.push(message);
           timelineEvents.push({timestamp: Date.now(), type: 'log', data: message});
           finishTest({ status: 'FAIL', reason: 'Shaka Player error' });
         });
-        shakaPlayer.load(test.manifest).catch(() => {
+        shakaPlayer.attach(video).then(() => {
+          return shakaPlayer.load(test.manifest);
+        }).catch(() => {
           // error is handled by the event listener
         });
       } else {
