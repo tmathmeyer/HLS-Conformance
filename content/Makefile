@@ -54,6 +54,12 @@ ts_h264_720p_1s: $(SRC_720P)
 	ffmpeg -i $(SRC_720P) -c copy -start_number 0 -f hls -hls_time 1 \
 	-hls_list_size 0 -hls_segment_filename "$@/out_%03d.ts" $@/playlist.m3u8
 
+ts_mp3_1s:
+	mkdir -p $@ && \
+	ffmpeg -f lavfi -i sine=frequency=440:duration=10 -c:a libmp3lame -f hls \
+	-hls_time 1 -hls_list_size 0 \
+	-hls_segment_filename "$@/seg_%03d.ts" $@/playlist.m3u8
+
 mp4_h264_720p_1s: $(SRC_720P)
 	mkdir -p $@ && \
 	ffmpeg -i $(SRC_720P) -c:v copy -c:a copy -f hls \
@@ -110,9 +116,3 @@ mp4_h264_480p_1s_byterange: $(SRC)
 	-hls_time 1 -hls_list_size 0 -hls_segment_type fmp4 \
 	-hls_flags single_file \
 	-hls_segment_filename "$@/data.mp4" $@/playlist.m3u8
-
-mp4_mp3_1s:
-	mkdir -p $@ && \
-	ffmpeg -f lavfi -i sine=frequency=440:duration=10 -c:a libmp3lame -f hls \
-	-hls_time 1 -hls_list_size 0 -hls_segment_type fmp4 \
-	-hls_segment_filename "$@/seg_%03d.mp4" $@/playlist.m3u8

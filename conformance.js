@@ -131,7 +131,7 @@ export const hlsConformanceTests = [
   },
   {
     name: 'MP3 in fMP4 (mp4a.40.34)',
-    manifest: '/manifests/mp4_mp3_multivariant/playlist.m3u8',
+    manifest: '/manifests/ts_mp3_multivariant/playlist.m3u8',
     description: 'A multivariant playlist with a single variant using the MP3 codec in fragmented MP4 segments.'
   },
 ];
