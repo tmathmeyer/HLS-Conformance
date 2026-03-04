@@ -1,5 +1,6 @@
 export const mimeTypes = [
   'audio/aac',
+  'audio/mp4',
   'video/mp4',
   'video/webm',
   'video/mp2t',
