@@ -135,4 +135,9 @@ export const hlsConformanceTests = [
     manifest: '/manifests/ts_mp3_multivariant/playlist.m3u8',
     description: 'A multivariant playlist with a single variant using the MP3 codec in fragmented MP4 segments.'
   },
+  {
+    name: 'Multivariant fMP4 H.264 with Data URIs',
+    manifest: '/manifests/multivariant_data_uri/playlist.m3u8',
+    description: 'A multivariant playlist pointing to media playlists encapsulated inside data URIs.'
+  },
 ];
