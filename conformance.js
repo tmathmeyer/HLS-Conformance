@@ -140,4 +140,9 @@ export const hlsConformanceTests = [
     manifest: '/manifests/multivariant_data_uri/playlist.m3u8',
     description: 'A multivariant playlist pointing to media playlists encapsulated inside data URIs.'
   },
+  {
+    name: 'VOD H.264 fMP4 with Data URI Segments',
+    manifest: '/manifests/segment_data_uri/playlist.m3u8',
+    description: 'A VOD presentation where the initialization and media segments are encapsulated inside data URIs.'
+  },
 ];
