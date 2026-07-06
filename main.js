@@ -40,6 +40,69 @@ let running = 0;
 let passedEl, failedEl, runningEl;
 const results = {};
 
+const testQueue = [];
+let activeTestCount = 0;
+const CONCURRENCY_LIMIT = 10;
+
+function ensureServiceWorkerReady(onReady) {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    onReady();
+  } else if ('serviceWorker' in navigator) {
+    console.error('Service worker is not yet in control. Cannot run tests.');
+    alert('Service worker is not ready. Please reload the page and try again.');
+  } else {
+    console.error('Service workers not supported. Cannot run tests.');
+    onReady(); // Fallback for browsers without service workers
+  }
+}
+
+function createInitialPlayerResults(playerLabel, playerKey, idx) {
+  return `
+    <div class="player-results" data-player="${playerKey}">
+      <div class="player-result-header">
+        <h4>${playerLabel}</h4>
+        <div>
+          <button class="rerun-btn" data-player="${playerKey}" data-test-index="${idx}">Run</button>
+          <button class="open-in-new-tab-btn" data-player="${playerKey}" data-test-index="${idx}">Open in New Tab</button>
+        </div>
+      </div>
+      <p style="color: #606770; font-style: italic;">Not yet run.</p>
+    </div>
+  `;
+}
+
+function enqueueTest(el, player) {
+  const resultEl = el.summary.querySelector(`.result.${player.replace('.', '')}`);
+  if (!resultEl || resultEl.classList.contains('running')) {
+    return;
+  }
+
+  if (resultEl.classList.contains('pass')) {
+    passed--;
+    passedEl.textContent = passed;
+  } else if (resultEl.classList.contains('fail')) {
+    failed--;
+    failedEl.textContent = failed;
+  }
+
+  resultEl.textContent = 'QUEUED';
+  resultEl.className = `result ${player.replace('.', '')} running`;
+
+  testQueue.push({ el, player });
+  processQueue();
+}
+
+function processQueue() {
+  while (activeTestCount < CONCURRENCY_LIMIT && testQueue.length > 0) {
+    const { el, player } = testQueue.shift();
+    activeTestCount++;
+    runTest(el, player).finally(() => {
+      activeTestCount--;
+      processQueue();
+    });
+  }
+}
+
 async function runTest(el, player) {
   running++;
   runningEl.textContent = running;
@@ -137,7 +200,7 @@ async function runTest(el, player) {
   `
 };
 
-async function runAllHlsTests() {
+function runAllHlsTests(targetPlayer = null) {
   const reports = document.querySelectorAll('#hls-reports-container .report-box');
   const testElements = Array.from(reports).map(details => {
     const index = parseInt(details.dataset.testIndex, 10);
@@ -149,42 +212,13 @@ async function runAllHlsTests() {
     return { test, details, summary, body, index };
   }).filter(Boolean); // Filter out any nulls
 
-  const totalEl = document.getElementById('total-count');
+  const playersToRun = targetPlayer ? [targetPlayer] : ['native', 'hls.js', 'shaka-player', 'video.js'];
 
-  let total = testElements.length * 4;
-  passed = 0;
-  failed = 0;
-  running = 0;
-
-  totalEl.textContent = total;
-  passedEl.textContent = passed;
-  failedEl.textContent = failed;
-  runningEl.textContent = running;
-
-  // Run up to 10 tests in parallel
-  const limit = 10;
-  const queue = [];
   for (const el of testElements) {
-    queue.push({el, player: 'native'});
-    queue.push({el, player: 'hls.js'});
-    queue.push({el, player: 'shaka-player'});
-    queue.push({el, player: 'video.js'});
-  }
-
-  const active = [];
-
-  const next = () => {
-    while (active.length < limit && queue.length > 0) {
-      const {el, player} = queue.shift();
-      const promise = runTest(el, player).then(() => {
-        active.splice(active.indexOf(promise), 1);
-        next();
-      });
-      active.push(promise);
+    for (const player of playersToRun) {
+      enqueueTest(el, player);
     }
-  };
-
-  next();
+  }
 }
 
 function filterTests() {
@@ -214,13 +248,13 @@ function renderHlsTests() {
       <div class="hls-report-summary">
         <span><strong>${test.name}:</strong> ${test.description}</span>
         <div class="run-column">
-          <button class="btn run-single-test-btn" data-test-index="${index}">Run</button>
+          <button class="btn run-single-test-btn" data-test-index="${index}" title="Run all players for this test">Run</button>
         </div>
         <div class="result-group">
-          <span class="result native not-run">NOT RUN</span>
-          <span class="result hlsjs not-run">NOT RUN</span>
-          <span class="result shaka-player not-run">NOT RUN</span>
-          <span class="result videojs not-run">NOT RUN</span>
+          <span class="result native not-run" data-player="native" data-test-index="${index}" title="Click to run Native test">NOT RUN</span>
+          <span class="result hlsjs not-run" data-player="hls.js" data-test-index="${index}" title="Click to run HLS.js test">NOT RUN</span>
+          <span class="result shaka-player not-run" data-player="shaka-player" data-test-index="${index}" title="Click to run Shaka Player test">NOT RUN</span>
+          <span class="result videojs not-run" data-player="video.js" data-test-index="${index}" title="Click to run Video.js test">NOT RUN</span>
         </div>
       </div>
     `;
@@ -228,10 +262,10 @@ function renderHlsTests() {
     const body = document.createElement('div');
     body.className = 'report-body';
     body.innerHTML = `
-      <div class="player-results" data-player="native"><h4>Native</h4><p>Not yet run.</p></div>
-      <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Not yet run.</p></div>
-      <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Not yet run.</p></div>
-      <div class="player-results" data-player="video.js"><h4>Video.js</h4><p>Not yet run.</p></div>
+      ${createInitialPlayerResults('NATIVE', 'native', index)}
+      ${createInitialPlayerResults('HLS.JS', 'hls.js', index)}
+      ${createInitialPlayerResults('SHAKA PLAYER', 'shaka-player', index)}
+      ${createInitialPlayerResults('VIDEO.JS', 'video.js', index)}
     `;
 
     details.appendChild(summary);
@@ -248,6 +282,8 @@ async function main() {
   passedEl = document.getElementById('passed-count');
   failedEl = document.getElementById('failed-count');
   runningEl = document.getElementById('running-count');
+  const totalEl = document.getElementById('total-count');
+  totalEl.textContent = hlsConformanceTests.length * 4;
 
   document.getElementById('test-filter').addEventListener('input', filterTests);
 
@@ -279,30 +315,14 @@ async function main() {
       const testIndex = e.target.dataset.testIndex;
       window.open(`test_runner.html?testIndex=${testIndex}&player=${player}`, '_blank');
     } else if (e.target.matches('.run-single-test-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
       const reportBox = e.target.closest('.report-box');
       const testIndex = parseInt(reportBox.dataset.testIndex, 10);
       if (isNaN(testIndex)) return;
 
-      const test = hlsConformanceTests[testIndex];
-      if (!test) return;
-
-      const el = {
-        summary: reportBox.querySelector('summary'),
-        body: reportBox.querySelector('.report-body'),
-        test: test,
-        index: testIndex,
-      };
-      runTest(el, 'native');
-      runTest(el, 'hls.js');
-      runTest(el, 'shaka-player');
-      runTest(el, 'video.js');
-    } else if (e.target.matches('.rerun-btn')) {
-      const player = e.target.dataset.player;
-      const reportBox = e.target.closest('.report-box');
-      const testIndex = reportBox.dataset.testIndex;
-      
       let test;
-      if (testIndex === '-1') {
+      if (testIndex === -1) {
         test = {
           name: reportBox.dataset.testName,
           manifest: reportBox.dataset.testManifest,
@@ -311,15 +331,7 @@ async function main() {
       } else {
         test = hlsConformanceTests[testIndex];
       }
-
-      const resultEl = reportBox.querySelector(`.result.${player.replace('.', '')}`);
-      if (resultEl.classList.contains('pass')) {
-        passed--;
-        passedEl.textContent = passed;
-      } else if (resultEl.classList.contains('fail')) {
-        failed--;
-        failedEl.textContent = failed;
-      }
+      if (!test) return;
 
       const el = {
         summary: reportBox.querySelector('summary'),
@@ -327,7 +339,45 @@ async function main() {
         test: test,
         index: testIndex,
       };
-      runTest(el, player);
+      ensureServiceWorkerReady(() => {
+        enqueueTest(el, 'native');
+        enqueueTest(el, 'hls.js');
+        enqueueTest(el, 'shaka-player');
+        enqueueTest(el, 'video.js');
+      });
+    } else if (e.target.matches('.rerun-btn, .run-single-cell-btn') || e.target.matches('.result')) {
+      if (e.target.matches('.result')) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.target.classList.contains('result-header')) return;
+      }
+      const player = e.target.dataset.player;
+      const reportBox = e.target.closest('.report-box');
+      if (!player || !reportBox) return;
+      const testIndex = parseInt(reportBox.dataset.testIndex, 10);
+      if (isNaN(testIndex)) return;
+
+      let test;
+      if (testIndex === -1) {
+        test = {
+          name: reportBox.dataset.testName,
+          manifest: reportBox.dataset.testManifest,
+          description: reportBox.dataset.testDescription,
+        };
+      } else {
+        test = hlsConformanceTests[testIndex];
+      }
+      if (!test) return;
+
+      const el = {
+        summary: reportBox.querySelector('summary'),
+        body: reportBox.querySelector('.report-body'),
+        test: test,
+        index: testIndex,
+      };
+      ensureServiceWorkerReady(() => {
+        enqueueTest(el, player);
+      });
     }
   });
 
@@ -368,11 +418,14 @@ async function main() {
     summary.innerHTML = `
       <div class="hls-report-summary">
         <span><strong>${customTest.name}:</strong> ${customTest.description}</span>
+        <div class="run-column">
+          <button class="btn run-single-test-btn" data-test-index="-1" title="Run all players for this test">Run</button>
+        </div>
         <div class="result-group">
-          <span class="result native running">QUEUED</span>
-          <span class="result hlsjs running">QUEUED</span>
-          <span class="result shaka-player running">QUEUED</span>
-          <span class="result videojs running">QUEUED</span>
+          <span class="result native not-run" data-player="native" data-test-index="-1" title="Click to run Native test">NOT RUN</span>
+          <span class="result hlsjs not-run" data-player="hls.js" data-test-index="-1" title="Click to run HLS.js test">NOT RUN</span>
+          <span class="result shaka-player not-run" data-player="shaka-player" data-test-index="-1" title="Click to run Shaka Player test">NOT RUN</span>
+          <span class="result videojs not-run" data-player="video.js" data-test-index="-1" title="Click to run Video.js test">NOT RUN</span>
         </div>
       </div>
     `;
@@ -380,10 +433,10 @@ async function main() {
     const body = document.createElement('div');
     body.className = 'report-body';
     body.innerHTML = `
-      <div class="player-results" data-player="native"><h4>Native</h4><p>Waiting to run...</p></div>
-      <div class="player-results" data-player="hls.js"><h4>HLS.js</h4><p>Waiting to run...</p></div>
-      <div class="player-results" data-player="shaka-player"><h4>Shaka Player</h4><p>Waiting to run...</p></div>
-      <div class="player-results" data-player="video.js"><h4>Video.js</h4><p>Waiting to run...</p></div>
+      ${createInitialPlayerResults('NATIVE', 'native', -1)}
+      ${createInitialPlayerResults('HLS.JS', 'hls.js', -1)}
+      ${createInitialPlayerResults('SHAKA PLAYER', 'shaka-player', -1)}
+      ${createInitialPlayerResults('VIDEO.JS', 'video.js', -1)}
     `;
 
     details.appendChild(summary);
@@ -397,23 +450,28 @@ async function main() {
       index: -1, // Custom test
     };
 
-    runTest(el, 'native');
-    runTest(el, 'hls.js');
-    runTest(el, 'shaka-player');
-    runTest(el, 'video.js');
+    ensureServiceWorkerReady(() => {
+      enqueueTest(el, 'native');
+      enqueueTest(el, 'hls.js');
+      enqueueTest(el, 'shaka-player');
+      enqueueTest(el, 'video.js');
+    });
   });
 
-document.getElementById('run-all-tests-btn').addEventListener('click', () => {
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      console.log('Service worker is active and controlling the page.');
-      runAllHlsTests();
-    } else if ('serviceWorker' in navigator) {
-      console.error('Service worker is not yet in control. Cannot run tests.');
-      alert('Service worker is not ready. Please reload the page and try again.');
-    } else {
-      console.error('Service workers not supported. Cannot run tests.');
-      runAllHlsTests(); // Fallback for browsers without service workers
-    }
+  document.getElementById('run-all-tests-btn').addEventListener('click', () => {
+    ensureServiceWorkerReady(() => {
+      runAllHlsTests(null);
+    });
+  });
+
+  document.querySelectorAll('.run-player-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const player = e.target.dataset.player;
+      if (!player) return;
+      ensureServiceWorkerReady(() => {
+        runAllHlsTests(player);
+      });
+    });
   });
 
   if ('serviceWorker' in navigator) {

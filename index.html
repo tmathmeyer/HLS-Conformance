@@ -48,13 +48,13 @@
           <input type="search" id="test-filter" placeholder="Filter...">
         </div>
         <div class="run-column-header">
-          <button id="run-all-tests-btn" class="btn">Run All</button>
+          <button id="run-all-tests-btn" class="btn" title="Run all tests for all players">Run All</button>
         </div>
         <div class="result-group">
-          <span class="result-header">Native</span>
-          <span class="result-header">HLS.js</span>
-          <span class="result-header">Shaka</span>
-          <span class="result-header">Video.js</span>
+          <span class="result-header run-player-btn" data-player="native" title="Click to run all Native tests">&#9654; Native</span>
+          <span class="result-header run-player-btn" data-player="hls.js" title="Click to run all HLS.js tests">&#9654; HLS.js</span>
+          <span class="result-header run-player-btn" data-player="shaka-player" title="Click to run all Shaka Player tests">&#9654; Shaka</span>
+          <span class="result-header run-player-btn" data-player="video.js" title="Click to run all Video.js tests">&#9654; Video.js</span>
         </div>
       </div>
     </div>
