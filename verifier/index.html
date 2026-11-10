@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HLS Manifest Verifier</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <h1>HLS Manifest Verifier</h1>
+      <a href="../" class="header-link">HLS Conformance Tester</a>
+    </div>
+    <p class="header-desc">
+      Validates HLS multivariant and media playlists in the browser using Chromium's C++ HLS parser compiled to WebAssembly, showing parsed variants, renditions, and segments or the full media::Status error trace.
+    </p>
+  </header>
+  <main class="workspace">
+    <div class="editor">
+      <div id="backdrop" aria-hidden="true"></div>
+      <textarea id="manifest" spellcheck="false" wrap="off" placeholder="Paste or edit an HLS manifest here..."></textarea>
+    </div>
+    <pre id="output">Loading WASM...</pre>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

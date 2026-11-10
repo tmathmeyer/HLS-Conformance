@@ -48,9 +48,25 @@ footer {
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
 .header-content h1 {
   font-size: 1.25rem;
   margin: 0;
+}
+
+.header-link {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.header-link:hover {
+  text-decoration: underline;
 }
 
 .header-right {
